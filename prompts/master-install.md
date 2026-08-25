@@ -1,11 +1,11 @@
 # Master Install Prompt
 
-مقدار `[REPOSITORY_URL]` را جایگزین و این Prompt را در Codex، Claude Code یا Gemini CLI اجرا کنید.
+این Prompt را در Codex، Claude Code یا Gemini CLI اجرا کنید.
 
 ```text
 ## هدف
 
-Personal Agenting OS را از `[REPOSITORY_URL]` به‌صورت محلی برای من راه‌اندازی کن تا حافظه‌ی پروژه‌ها، وضعیت کار و مصرف ابزارهای LLM فقط با اطلاعات خودم به‌روز شوند.
+Personal Agenting OS را از `https://github.com/amirsinaz/personal-agenting-os` به‌صورت محلی برای من راه‌اندازی کن تا حافظه‌ی پروژه‌ها، وضعیت کار و مصرف ابزارهای LLM فقط با اطلاعات خودم به‌روز شوند.
 
 ## مرزها
 

@@ -17,9 +17,8 @@
 ## راه‌اندازی پیشنهادی
 
 1. فایل [`prompts/master-install.md`](prompts/master-install.md) را باز کنید.
-2. مقدار `[REPOSITORY_URL]` را با آدرس همین Repository جایگزین کنید.
-3. Prompt را در Codex، Claude Code یا Gemini CLI اجرا کنید.
-4. Agent ابتدا سیستم و وجود Obsidian را بررسی می‌کند و قبل از نصب یا تغییرات سیستمی اجازه می‌گیرد.
+2. Prompt را در Codex، Claude Code یا Gemini CLI اجرا کنید.
+3. Agent ابتدا سیستم و وجود Obsidian را بررسی می‌کند و قبل از نصب یا تغییرات سیستمی اجازه می‌گیرد.
 
 برای اجرای مستقیم Setup پس از دریافت Repository:
 
