@@ -1,0 +1,13 @@
+{
+  "name": "personal-agenting-os",
+  "version": "0.1.0",
+  "license": "MIT",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dashboard": "node src/start-dashboard.js",
+    "optimize": "node src/optimize-cli.js",
+    "setup": "node src/setup-cli.js",
+    "test": "node --test"
+  }
+}

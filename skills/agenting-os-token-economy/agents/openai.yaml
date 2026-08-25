@@ -1,0 +1,3 @@
+interface:
+  display_name: "Agenting OS Token Economy"
+  short_description: "Track and reduce avoidable LLM usage"

@@ -1,0 +1,118 @@
+import assert from "node:assert/strict";
+import test from "node:test";
+
+import { renderDashboard } from "../src/dashboard.js";
+
+test("renders an instructive empty state without example metrics", () => {
+  const html = renderDashboard({ projects: [] });
+
+  assert.match(html, /هنوز پروژه‌ای در Vault ثبت نشده/);
+  assert.match(html, /Templates\/Project\.md/);
+  assert.doesNotMatch(html, /Sample|۱۲۳|\$[0-9]/);
+});
+
+test("renders only projects found in the user's local state", () => {
+  const html = renderDashboard({
+    projects: [
+      { id: "launch", name: "راه‌اندازی محصول", status: "active" },
+      { id: "research", name: "تحقیق بازار", status: "paused" },
+    ],
+  });
+
+  assert.match(html, /راه‌اندازی محصول/);
+  assert.match(html, /تحقیق بازار/);
+  assert.match(html, /active/);
+  assert.match(html, /paused/);
+  assert.doesNotMatch(html, /AdLab|Mazbar/);
+});
+
+test("escapes project text read from local files", () => {
+  const html = renderDashboard({
+    projects: [{ id: "unsafe", name: "<script>alert(1)</script>", status: "active" }],
+  });
+
+  assert.doesNotMatch(html, /<script>/);
+  assert.match(html, /&lt;script&gt;/);
+});
+
+test("shows actual provider usage and keeps missing measurements unavailable", () => {
+  const html = renderDashboard({
+    projects: [],
+    usage: [
+      { provider: "codex", measurement: "actual", files: 2, totalTokens: 1250 },
+      { provider: "claude", measurement: "unavailable", files: 1 },
+    ],
+  });
+
+  assert.match(html, /Codex/);
+  assert.match(html, /1,250/);
+  assert.match(html, /Claude/);
+  assert.match(html, /Unavailable/);
+});
+
+test("shows project attribution including an explicit Unassigned bucket", () => {
+  const html = renderDashboard({
+    projects: [],
+    usageByProject: [
+      { project: "launch", totalTokens: 900 },
+      { project: "Unassigned", totalTokens: 200 },
+    ],
+  });
+
+  assert.match(html, /launch/);
+  assert.match(html, /900/);
+  assert.match(html, /Unassigned/);
+  assert.match(html, /200/);
+});
+
+test("shows metered API and fixed subscription costs separately", () => {
+  const html = renderDashboard({
+    projects: [],
+    costs: {
+      metered: { measurement: "actual", currency: "USD", total: 4.25, byProject: [] },
+      subscriptions: { measurement: "actual", currency: "USD", monthlyTotal: 20, items: [] },
+    },
+  });
+
+  assert.match(html, /API/);
+  assert.match(html, /4\.25 USD/);
+  assert.match(html, /اشتراک ماهانه/);
+  assert.match(html, /20\.00 USD/);
+});
+
+test("shows actual budget use and keeps forecast explicitly estimated", () => {
+  const html = renderDashboard({
+    projects: [],
+    budgetStatus: [
+      { scope: "all", measurement: "actual", currency: "USD", budget: 100, actualSpend: 10, usedPercent: 10, forecast: 28, forecastMeasurement: "estimated", status: "on-track" },
+      { scope: "project", project: "launch", measurement: "unavailable" },
+    ],
+  });
+
+  assert.match(html, /بودجه‌ی ماهانه/);
+  assert.match(html, /10\.00 \/ 100\.00 USD/);
+  assert.match(html, /برآورد پایان ماه: 28\.00 USD/);
+  assert.match(html, /estimated/);
+  assert.match(html, /launch/);
+  assert.match(html, /Unavailable/);
+});
+
+test("shows recommendations as advisory with unavailable savings", () => {
+  const html = renderDashboard({
+    projects: [],
+    recommendations: [{
+      id: "complete-project-attribution",
+      kind: "configuration",
+      measurement: "actual",
+      evidence: { unassignedTokens: 1000, totalTokens: 1500 },
+      expectedSaving: { measurement: "unavailable" },
+      action: "review",
+    }],
+  });
+
+  assert.match(html, /پیشنهادهای بهینه‌سازی/);
+  assert.match(html, /تخصیص مصرف به پروژه‌ها را کامل کنید/);
+  assert.match(html, /1,000/);
+  assert.match(html, /صرفه‌جویی: Unavailable/);
+  assert.match(html, /بررسی/);
+});
