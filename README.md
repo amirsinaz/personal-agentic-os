@@ -1,26 +1,29 @@
 # Personal Agenting OS
 
-یک ساختار Local-first برای مدیریت چند پروژه و حفظ حافظه‌ی کاری مشترک میان Codex، Claude Code و Gemini CLI با استفاده از Obsidian.
+A local-first system for managing multiple projects and maintaining shared working memory across Codex, Claude Code, and Gemini CLI—with Obsidian as the memory layer.
 
-این Repository هیچ پروژه، مسیر، Prompt، هزینه یا داده‌ی نمونه‌ای از سازنده ندارد. Dashboard پس از نصب فقط با اطلاعاتی که خود کاربر انتخاب می‌کند به‌روز می‌شود.
+The repository contains none of the creator's projects, file paths, prompts, costs, or sample usage data. After installation, the dashboard updates only from sources the user explicitly selects.
 
-## چه چیزی دریافت می‌کنید؟
+## What it includes
 
-- Starter Vault خالی برای Obsidian
-- Adapterهای محلی برای `AGENTS.md`، `CLAUDE.md` و `GEMINI.md`
-- Sync مصرف Token از منابع محلی و قابل‌تأیید
-- تخصیص مصرف به پروژه‌های تأییدشده یا `Unassigned`
-- محاسبه‌ی هزینه فقط با Price Book تأییدشده‌ی کاربر
-- Budget و Forecast با برچسب‌های `actual`، `estimated` و `unavailable`
-- پیشنهادهای بهینه‌سازی و جریان «بررسی → اعمال → بازگشت به حالت قبلی»
+- An empty Obsidian Starter Vault
+- Local adapters for `AGENTS.md`, `CLAUDE.md`, and `GEMINI.md`
+- Token usage sync from verifiable local sources
+- Evidence-based usage attribution to confirmed projects or `Unassigned`
+- Cost calculations based only on a user-confirmed price book
+- Overall and per-project budgets with `actual`, `estimated`, and `unavailable` labels
+- Advisory optimization recommendations
+- A reversible Preview → Apply → Rollback workflow for Lean Context rules
 
-## راه‌اندازی پیشنهادی
+## Recommended installation
 
-1. فایل [`prompts/master-install.md`](prompts/master-install.md) را باز کنید.
-2. Prompt را در Codex، Claude Code یا Gemini CLI اجرا کنید.
-3. Agent ابتدا سیستم و وجود Obsidian را بررسی می‌کند و قبل از نصب یا تغییرات سیستمی اجازه می‌گیرد.
+1. Open [`prompts/master-install-en.md`](prompts/master-install-en.md).
+2. Paste the prompt into Codex, Claude Code, or Gemini CLI.
+3. The agent inspects the environment first and asks before installations or system changes.
 
-برای اجرای مستقیم Setup پس از دریافت Repository:
+The [Persian master prompt](prompts/master-install.md) is also available.
+
+For direct setup after obtaining the repository:
 
 ```bash
 npm install
@@ -28,23 +31,23 @@ npm run setup
 npm run dashboard -- /absolute/path/to/config.json
 ```
 
-## اگر Obsidian نصب نیست
+## If Obsidian is not installed
 
-Setup شما را به صفحه‌ی رسمی `https://obsidian.md/download` هدایت می‌کند. می‌توانید ابتدا Obsidian را نصب کنید یا حالت Dashboard-only را انتخاب کنید؛ در حالت دوم حافظه‌ی مشترک کامل فعال نیست.
+The setup directs the user only to the official [Obsidian download page](https://obsidian.md/download). The user can install Obsidian or continue in Dashboard-only mode; Dashboard-only mode does not provide the complete shared-memory layer.
 
-## حریم خصوصی و شمارش نصب
+## Privacy and install counting
 
-Telemetry به‌صورت پیش‌فرض خاموش است. اگر کاربر صریحاً موافقت کند، تنها این اطلاعات برای شمارش یک نصب موفق مجازند:
+Telemetry is disabled by default. If the user explicitly opts in, the successful-install event is limited to:
 
-- شناسه‌ی تصادفی نصب
-- نسخه‌ی برنامه
-- سیستم‌عامل
-- نوع نصب: Full یا Dashboard-only
-- زمان ثبت‌شده توسط Server
+- Random installation ID
+- Application version
+- Operating system
+- Install type: Full or Dashboard-only
+- Server-recorded timestamp
 
-نام پروژه، مسیر فایل، محتوای Vault، Prompt، متن گفتگو، Token، Cost و Credential هرگز بخشی از این Payload نیستند.
+Project names, file paths, Vault content, prompts, conversation text, token records, cost records, and credentials are never part of this payload.
 
-## بررسی و بازگشت به حالت قبلی
+## Preview, apply, and rollback
 
 ```bash
 npm run optimize -- preview /absolute/project/path codex,claude,gemini
@@ -52,16 +55,24 @@ npm run optimize -- apply /absolute/project/path codex,claude,gemini
 npm run optimize -- rollback /absolute/project/path/.agenting-os/changes/AUDIT_ID.json
 ```
 
-## وضعیت اندازه‌گیری
+Preview makes no changes. Apply requires explicit confirmation and creates a local audit. Rollback restores the exact previous content and refuses to overwrite newer user edits.
 
-- `actual`: مستقیماً از داده‌ی قابل‌تأیید محاسبه شده است.
-- `estimated`: Forecast است و به‌عنوان عدد واقعی گزارش نمی‌شود.
-- `unavailable`: داده یا قیمت کافی وجود ندارد؛ سیستم عدد جایگزین نمی‌سازد.
+## Measurement labels
 
-## توسعه
+- `actual`: Calculated directly from verifiable data.
+- `estimated`: A forecast, never presented as actual spend or usage.
+- `unavailable`: Required data or pricing is missing; no substitute value is invented.
+
+## Development
 
 ```bash
 npm test
 ```
 
-این پروژه با MIT License منتشر می‌شود.
+## Resource page
+
+See the bilingual guide, real sanitized screenshots, and copyable prompts at [personal-agenting-os.sina-zy.chatgpt.site](https://personal-agenting-os.sina-zy.chatgpt.site).
+
+## License
+
+MIT © AmirSina Zamanian
