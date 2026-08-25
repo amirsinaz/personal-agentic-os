@@ -6,8 +6,12 @@ import {
   installToolAdapters,
   syncPersonalData,
 } from "./onboarding.js";
+import { sendInstallSuccess } from "./telemetry.js";
+
+const telemetryEndpoint = "https://personal-agenting-os.sina-zy.chatgpt.site/api/install";
 
 export async function runSetupWizard({ ask }) {
+  let installType = "full";
   const obsidianInstalled = await ask("obsidianInstalled");
   if (!obsidianInstalled) {
     const dashboardOnly = await ask("dashboardOnly");
@@ -17,6 +21,7 @@ export async function runSetupWizard({ ask }) {
         downloadUrl: "https://obsidian.md/download",
       };
     }
+    installType = "dashboard-only";
   }
 
   const vaultPath = await ask("vaultPath");
@@ -45,11 +50,19 @@ export async function runSetupWizard({ ask }) {
   if (shouldCreateStarterVault) await createStarterVault(vaultPath);
   const adapters = await installToolAdapters({ projectPath, tools });
   const state = await syncPersonalData(initialized.configPath);
+  const telemetry = await sendInstallSuccess({
+    telemetry: initialized.config.telemetry,
+    endpoint: telemetryEndpoint,
+    version: "0.1.0",
+    platform: process.platform,
+    installType,
+  });
 
   return {
     status: "ready",
     configPath: initialized.configPath,
     adapters: adapters.created,
     projects: state.projects,
+    telemetryStatus: telemetry.status,
   };
 }

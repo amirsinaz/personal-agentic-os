@@ -45,6 +45,7 @@ test("configures selected agents and syncs the user's empty vault", async () => 
   });
 
   assert.equal(result.status, "ready");
+  assert.equal(result.telemetryStatus, "disabled");
   assert.deepEqual(result.adapters.sort(), ["AGENTS.md", "CLAUDE.md", "GEMINI.md"]);
   const config = JSON.parse(await readFile(result.configPath, "utf8"));
   assert.deepEqual(config.telemetry, { enabled: false });
