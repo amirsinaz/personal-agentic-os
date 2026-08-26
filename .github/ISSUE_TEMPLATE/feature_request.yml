@@ -1,0 +1,22 @@
+name: Feature request
+description: Suggest a generic improvement for the public system.
+title: "[Feature]: "
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: "Describe the general need. Do not include private project structures, Vault content, prompts, transcripts, credentials, or full file paths."
+  - type: textarea
+    id: problem
+    attributes: { label: Problem to solve }
+    validations: { required: true }
+  - type: textarea
+    id: outcome
+    attributes: { label: Desired outcome }
+    validations: { required: true }
+  - type: dropdown
+    id: scope
+    attributes:
+      label: Area
+      options: [Setup, Shared memory, Dashboard, Usage tracking, Token economy, Documentation, Other]
+    validations: { required: true }

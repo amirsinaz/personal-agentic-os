@@ -1,0 +1,12 @@
+name: Privacy question
+description: Ask how local data, consent, or telemetry is handled.
+title: "[Privacy]: "
+labels: [privacy]
+body:
+  - type: markdown
+    attributes:
+      value: "Please keep the question generic. Never include credentials, full paths, Vault contents, prompts, transcripts, project names, or private usage data."
+  - type: textarea
+    id: question
+    attributes: { label: Question }
+    validations: { required: true }
