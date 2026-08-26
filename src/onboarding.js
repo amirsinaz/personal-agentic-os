@@ -95,7 +95,7 @@ const adapterFiles = {
   claude: "CLAUDE.md",
 };
 
-const adapterInstructions = `# Personal Agenting OS
+const adapterInstructions = `# Personal Agentic OS
 
 - Resolve project memory only through the local Agenting OS configuration.
 - Read the active project's context pack before continuing existing work.

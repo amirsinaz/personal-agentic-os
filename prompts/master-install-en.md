@@ -7,7 +7,7 @@ Paste this prompt into Codex, Claude Code, or Gemini CLI.
 ```text
 ## Goal
 
-Install Personal Agenting OS locally from `https://github.com/amirsinaz/personal-agenting-os`. It must use only my own data to maintain shared project memory, project status, and LLM usage visibility.
+Install Personal Agentic OS locally from `https://github.com/amirsinaz/personal-agenting-os`. It must use only my own data to maintain shared project memory, project status, and LLM usage visibility.
 
 ## Boundaries
 

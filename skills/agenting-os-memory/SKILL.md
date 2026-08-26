@@ -1,6 +1,6 @@
 ---
 name: agenting-os-memory
-description: Maintain concise, evidence-linked operational memory in a configured Personal Agenting OS. Apply when a project session produces decisions, verified state, open questions, or next actions worth preserving.
+description: Maintain concise, evidence-linked operational memory in a configured Personal Agentic OS. Apply when a project session produces decisions, verified state, open questions, or next actions worth preserving.
 ---
 
 # Agenting OS Memory

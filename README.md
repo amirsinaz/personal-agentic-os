@@ -1,4 +1,4 @@
-# Personal Agenting OS
+# Personal Agentic OS
 
 A local-first system for managing multiple projects and maintaining shared working memory across Codex, Claude Code, and Gemini CLI—with Obsidian as the memory layer.
 

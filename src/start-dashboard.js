@@ -10,5 +10,5 @@ if (!configPath || !path.isAbsolute(configPath)) {
 const port = Number(process.env.PORT || 4310);
 const server = createDashboardServer(configPath);
 server.listen(port, "127.0.0.1", () => {
-  process.stdout.write(`Personal Agenting OS: http://127.0.0.1:${port}\n`);
+  process.stdout.write(`Personal Agentic OS: http://127.0.0.1:${port}\n`);
 });

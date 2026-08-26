@@ -1,6 +1,6 @@
 ---
 name: agenting-os-core
-description: Use a locally configured Personal Agenting OS as project memory. Apply when starting, continuing, or closing work that should read or update a project's portable context pack.
+description: Use a locally configured Personal Agentic OS as project memory. Apply when starting, continuing, or closing work that should read or update a project's portable context pack.
 ---
 
 # Agenting OS Core

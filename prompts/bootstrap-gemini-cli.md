@@ -1,7 +1,7 @@
 # پرامپت راه‌اندازی با Gemini CLI
 
 ```text
-هدف: Personal Agenting OS را از `[REPOSITORY_URL]` به‌صورت محلی و Privacy-first برای من راه‌اندازی کن.
+هدف: Personal Agentic OS را از `[REPOSITORY_URL]` به‌صورت محلی و Privacy-first برای من راه‌اندازی کن.
 
 محدودیت‌ها:
 - ابتدا فقط محیط را بررسی کن.

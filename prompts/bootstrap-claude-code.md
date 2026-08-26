@@ -2,7 +2,7 @@
 
 ```text
 ## Objective
-Personal Agenting OS را از `[REPOSITORY_URL]` به‌صورت محلی و Privacy-first برای من راه‌اندازی کن.
+Personal Agentic OS را از `[REPOSITORY_URL]` به‌صورت محلی و Privacy-first برای من راه‌اندازی کن.
 
 ## Scope and boundaries
 - ابتدا فقط محیط را بررسی کن.
@@ -20,4 +20,3 @@ Personal Agenting OS را از `[REPOSITORY_URL]` به‌صورت محلی و Pr
 🎯 Target: Claude Code، 💡 برای اجرای کنترل‌شده‌ی Setup Wizard با Permission boundary و توقف پیش از تغییرات سیستمی بهینه شده است.
 
 این Prompt به فایل‌ها و Terminal دسترسی واقعی می‌دهد؛ مسیر Repository و مجوزها را قبل از اجرا بررسی کنید.
-

@@ -62,7 +62,7 @@ export function renderDashboard(state) {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Personal Agenting OS</title>
+  <title>Personal Agentic OS</title>
   <style>
     :root{--ink:#eef3ff;--muted:#b7c2d9;--panel:#121a2b;--line:#52627f;--mint:#72dfbd;--blue:#79a8ff;--bg:#080d1c}
     *{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 85% 0,#172747 0,var(--bg) 38%);color:var(--ink);font-family:Vazirmatn,Tahoma,sans-serif;min-height:100vh}
