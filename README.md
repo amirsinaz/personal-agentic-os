@@ -71,7 +71,7 @@ npm test
 
 ## Resource page
 
-See the bilingual guide, real sanitized screenshots, and copyable prompts at [personal-agenting-os.sina-zy.chatgpt.site](https://personal-agenting-os.sina-zy.chatgpt.site).
+See the bilingual guide, real sanitized screenshots, and copyable prompts at [myagenticstack.com](https://myagenticstack.com).
 
 ## License
 

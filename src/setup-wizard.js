@@ -8,7 +8,7 @@ import {
 } from "./onboarding.js";
 import { sendInstallSuccess } from "./telemetry.js";
 
-const telemetryEndpoint = "https://personal-agenting-os.sina-zy.chatgpt.site/api/install";
+const telemetryEndpoint = "https://myagenticstack.com/api/install";
 
 export async function runSetupWizard({ ask }) {
   let installType = "full";

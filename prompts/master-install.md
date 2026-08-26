@@ -2,7 +2,7 @@
 
 این Prompt را در Codex، Claude Code یا Gemini CLI اجرا کنید.
 
-[راهنمای تصویری و نسخه‌ی به‌روز](https://personal-agenting-os.sina-zy.chatgpt.site) · [Repository و مستندات](https://github.com/amirsinaz/personal-agentic-os)
+[راهنمای تصویری و نسخه‌ی به‌روز](https://myagenticstack.com) · [Repository و مستندات](https://github.com/amirsinaz/personal-agentic-os)
 
 ```text
 ## هدف
