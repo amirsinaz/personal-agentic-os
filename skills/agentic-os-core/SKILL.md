@@ -1,11 +1,11 @@
 ---
-name: agenting-os-core
+name: agentic-os-core
 description: Use a locally configured Personal Agentic OS as project memory. Apply when starting, continuing, or closing work that should read or update a project's portable context pack.
 ---
 
-# Agenting OS Core
+# Agentic OS Core
 
-Use only the Vault and source paths selected in the local Agenting OS configuration. Never assume a username, home directory, project name, or provider-specific data path.
+Use only the Vault and source paths selected in the local Agentic OS configuration. Never assume a username, home directory, project name, or provider-specific data path.
 
 ## Start work
 

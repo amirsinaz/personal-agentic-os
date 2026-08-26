@@ -2,12 +2,12 @@
 
 Paste this prompt into Codex, Claude Code, or Gemini CLI.
 
-[Visual guide and latest version](https://personal-agenting-os.sina-zy.chatgpt.site) · [Repository and documentation](https://github.com/amirsinaz/personal-agenting-os)
+[Visual guide and latest version](https://personal-agenting-os.sina-zy.chatgpt.site) · [Repository and documentation](https://github.com/amirsinaz/personal-agentic-os)
 
 ```text
 ## Goal
 
-Install Personal Agentic OS locally from `https://github.com/amirsinaz/personal-agenting-os`. It must use only my own data to maintain shared project memory, project status, and LLM usage visibility.
+Install Personal Agentic OS locally from `https://github.com/amirsinaz/personal-agentic-os`. It must use only my own data to maintain shared project memory, project status, and LLM usage visibility.
 
 ## Boundaries
 

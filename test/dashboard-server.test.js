@@ -20,7 +20,7 @@ function fetchText(port) {
 }
 
 test("refreshes dashboard data from the configured vault on every request", async (context) => {
-  const root = await mkdtemp(path.join(os.tmpdir(), "agenting-os-dashboard-"));
+  const root = await mkdtemp(path.join(os.tmpdir(), "agentic-os-dashboard-"));
   const vaultPath = path.join(root, "Vault");
   const projectPath = path.join(vaultPath, "01-Projects", "launch");
   await mkdir(projectPath, { recursive: true });

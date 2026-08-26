@@ -4,16 +4,16 @@ The public package uses a small, auditable skill bundle. Skills are copied from 
 
 ## Core skills
 
-1. `agenting-os-core`
+1. `agentic-os-core`
    - Reads the active project's context pack before work.
    - Writes accepted decisions, open questions, and next actions back to the user's Vault.
    - Never copies raw chat transcripts by default.
 
-2. `agenting-os-memory`
+2. `agentic-os-memory`
    - Converts a completed AI session into a concise, source-linked session summary.
    - Separates observed facts, user decisions, assumptions, and unresolved questions.
 
-3. `agenting-os-token-economy`
+3. `agentic-os-token-economy`
    - Prefers the lowest-cost reliable route.
    - Labels usage and cost as actual, estimated, or unavailable.
    - Does not invent savings or infer prices from token counts.
@@ -34,7 +34,7 @@ The Lean Context policy changes only the selected agent guidance files. Its expe
 ```bash
 npm run optimize -- preview /absolute/project/path codex,claude,gemini
 npm run optimize -- apply /absolute/project/path codex,claude,gemini
-npm run optimize -- rollback /absolute/project/path/.agenting-os/changes/AUDIT_ID.json
+npm run optimize -- rollback /absolute/project/path/.agentic-os/changes/AUDIT_ID.json
 ```
 
 `preview` makes no changes. `apply` asks for explicit confirmation and writes a local audit. `rollback` refuses to overwrite newer user edits made after the policy was applied.

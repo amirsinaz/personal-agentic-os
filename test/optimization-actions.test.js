@@ -11,7 +11,7 @@ import {
 } from "../src/optimization-actions.js";
 
 test("previews the lean context policy without changing adapter files", async () => {
-  const root = await mkdtemp(path.join(os.tmpdir(), "agenting-os-preview-"));
+  const root = await mkdtemp(path.join(os.tmpdir(), "agentic-os-preview-"));
   const adapterPath = path.join(root, "AGENTS.md");
   await writeFile(adapterPath, "# Existing instructions\n");
 
@@ -25,7 +25,7 @@ test("previews the lean context policy without changing adapter files", async ()
 });
 
 test("requires explicit confirmation before applying a preview", async () => {
-  const root = await mkdtemp(path.join(os.tmpdir(), "agenting-os-confirm-"));
+  const root = await mkdtemp(path.join(os.tmpdir(), "agentic-os-confirm-"));
   await writeFile(path.join(root, "CLAUDE.md"), "# Existing instructions\n");
   const preview = await previewOptimization({ projectPath: root, tools: ["claude"] });
 
@@ -34,13 +34,13 @@ test("requires explicit confirmation before applying a preview", async () => {
 });
 
 test("applies the reviewed policy and rolls back to the exact prior content", async () => {
-  const root = await mkdtemp(path.join(os.tmpdir(), "agenting-os-rollback-"));
+  const root = await mkdtemp(path.join(os.tmpdir(), "agentic-os-rollback-"));
   const adapterPath = path.join(root, "GEMINI.md");
   await writeFile(adapterPath, "# Personal rules\n");
   const preview = await previewOptimization({ projectPath: root, tools: ["gemini"] });
 
   const applied = await applyOptimization({ preview, confirmed: true });
-  assert.match(await readFile(adapterPath, "utf8"), /agenting-os:lean-context:start/);
+  assert.match(await readFile(adapterPath, "utf8"), /agentic-os:lean-context:start/);
   assert.equal(applied.status, "applied");
 
   const rolledBack = await rollbackOptimization({ auditPath: applied.auditPath, confirmed: true });

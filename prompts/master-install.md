@@ -2,12 +2,12 @@
 
 این Prompt را در Codex، Claude Code یا Gemini CLI اجرا کنید.
 
-[راهنمای تصویری و نسخه‌ی به‌روز](https://personal-agenting-os.sina-zy.chatgpt.site) · [Repository و مستندات](https://github.com/amirsinaz/personal-agenting-os)
+[راهنمای تصویری و نسخه‌ی به‌روز](https://personal-agenting-os.sina-zy.chatgpt.site) · [Repository و مستندات](https://github.com/amirsinaz/personal-agentic-os)
 
 ```text
 ## هدف
 
-Personal Agentic OS را از `https://github.com/amirsinaz/personal-agenting-os` به‌صورت محلی برای من راه‌اندازی کن تا حافظه‌ی پروژه‌ها، وضعیت کار و مصرف ابزارهای LLM فقط با اطلاعات خودم به‌روز شوند.
+Personal Agentic OS را از `https://github.com/amirsinaz/personal-agentic-os` به‌صورت محلی برای من راه‌اندازی کن تا حافظه‌ی پروژه‌ها، وضعیت کار و مصرف ابزارهای LLM فقط با اطلاعات خودم به‌روز شوند.
 
 ## مرزها
 

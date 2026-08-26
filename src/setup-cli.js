@@ -7,7 +7,7 @@ const prompts = {
   obsidianInstalled: "آیا Obsidian نصب است؟ (بله/خیر): ",
   dashboardOnly: "فعلاً فقط Dashboard را بدون حافظه‌ی کامل راه‌اندازی کنیم؟ (بله/خیر): ",
   vaultPath: "مسیر کامل Vault را وارد کنید: ",
-  appDataPath: "مسیر کامل نگه‌داری داده‌های محلی Agenting OS: ",
+  appDataPath: "مسیر کامل نگه‌داری داده‌های محلی Agentic OS: ",
   projectPath: "مسیر پروژه‌ای که فایل راهنمای Agentها در آن ساخته شود: ",
   tools: "ابزارها را با کاما جدا کنید (codex,claude,gemini): ",
   sources: "مسیر داده‌ها را به‌شکل tool=/path و با کاما جدا کنید: ",

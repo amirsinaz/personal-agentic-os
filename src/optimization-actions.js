@@ -4,7 +4,7 @@ import path from "node:path";
 
 const adapterFiles = { codex: "AGENTS.md", claude: "CLAUDE.md", gemini: "GEMINI.md" };
 const policy = `
-<!-- agenting-os:lean-context:start -->
+<!-- agentic-os:lean-context:start -->
 ## Lean context policy
 
 - For each task, load only the active project's index and directly relevant notes.
@@ -12,7 +12,7 @@ const policy = `
 - Prefer targeted file search over reading entire folders.
 - At handoff, preserve compact verified state instead of raw transcripts.
 - Treat token or cost savings as unavailable until measured by a controlled comparison.
-<!-- agenting-os:lean-context:end -->
+<!-- agentic-os:lean-context:end -->
 `;
 
 async function writeAtomic(filePath, content) {
@@ -35,7 +35,7 @@ export async function previewOptimization({ projectPath, tools }) {
     const file = adapterFiles[tool];
     const absolutePath = path.join(projectPath, file);
     const before = await readFile(absolutePath, "utf8");
-    const after = before.includes("agenting-os:lean-context:start")
+    const after = before.includes("agentic-os:lean-context:start")
       ? before
       : `${before.trimEnd()}\n${policy}`;
     changes.push({ file, before, after });
@@ -59,7 +59,7 @@ export async function applyOptimization({ preview, confirmed }) {
     if (current !== change.before) throw new Error(`Adapter changed after preview: ${change.file}`);
   }
 
-  const auditDirectory = path.join(preview.projectPath, ".agenting-os", "changes");
+  const auditDirectory = path.join(preview.projectPath, ".agentic-os", "changes");
   const auditPath = path.join(auditDirectory, `${preview.id}.json`);
   await mkdir(auditDirectory, { recursive: true });
   await writeAtomic(auditPath, `${JSON.stringify({ ...preview, status: "applying" }, null, 2)}\n`);

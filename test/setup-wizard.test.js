@@ -22,7 +22,7 @@ test("pauses at the official Obsidian install step when full memory is requested
 });
 
 test("configures selected agents and syncs the user's empty vault", async () => {
-  const root = await mkdtemp(path.join(os.tmpdir(), "agenting-os-wizard-"));
+  const root = await mkdtemp(path.join(os.tmpdir(), "agentic-os-wizard-"));
   const result = await runSetupWizard({
     ask: answerFrom({
       obsidianInstalled: true,

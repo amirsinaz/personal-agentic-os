@@ -12,7 +12,7 @@ import {
 } from "../src/onboarding.js";
 
 test("creates a local workspace from user-provided paths with telemetry disabled", async () => {
-  const root = await mkdtemp(path.join(os.tmpdir(), "personal-agenting-os-"));
+  const root = await mkdtemp(path.join(os.tmpdir(), "personal-agentic-os-"));
   const vaultPath = path.join(root, "My Vault");
   const codexPath = path.join(root, ".codex");
 
@@ -33,7 +33,7 @@ test("creates a local workspace from user-provided paths with telemetry disabled
 });
 
 test("records explicit telemetry consent without collecting project data", async () => {
-  const root = await mkdtemp(path.join(os.tmpdir(), "personal-agenting-os-"));
+  const root = await mkdtemp(path.join(os.tmpdir(), "personal-agentic-os-"));
 
   const result = await initializePersonalWorkspace({
     appDataPath: path.join(root, "app-data"),
@@ -59,7 +59,7 @@ test("rejects relative paths so personal data cannot resolve inside the package"
 });
 
 test("rebuilds project state from the user's vault after a local edit", async () => {
-  const root = await mkdtemp(path.join(os.tmpdir(), "personal-agenting-os-"));
+  const root = await mkdtemp(path.join(os.tmpdir(), "personal-agentic-os-"));
   const vaultPath = path.join(root, "Vault");
   const projectPath = path.join(vaultPath, "01-Projects", "Website");
   await mkdir(projectPath, { recursive: true });
@@ -88,7 +88,7 @@ test("rebuilds project state from the user's vault after a local edit", async ()
 });
 
 test("installs context adapters only for the AI tools selected by the user", async () => {
-  const root = await mkdtemp(path.join(os.tmpdir(), "personal-agenting-os-"));
+  const root = await mkdtemp(path.join(os.tmpdir(), "personal-agentic-os-"));
 
   const result = await installToolAdapters({
     projectPath: root,
@@ -96,13 +96,13 @@ test("installs context adapters only for the AI tools selected by the user", asy
   });
 
   assert.deepEqual(result.created.sort(), ["AGENTS.md", "GEMINI.md"]);
-  assert.match(await readFile(path.join(root, "AGENTS.md"), "utf8"), /local Agenting OS configuration/);
-  assert.match(await readFile(path.join(root, "GEMINI.md"), "utf8"), /local Agenting OS configuration/);
+  assert.match(await readFile(path.join(root, "AGENTS.md"), "utf8"), /local Agentic OS configuration/);
+  assert.match(await readFile(path.join(root, "GEMINI.md"), "utf8"), /local Agentic OS configuration/);
   await assert.rejects(readFile(path.join(root, "CLAUDE.md"), "utf8"), { code: "ENOENT" });
 });
 
 test("rejects unsupported AI tool adapters", async () => {
-  const root = await mkdtemp(path.join(os.tmpdir(), "personal-agenting-os-"));
+  const root = await mkdtemp(path.join(os.tmpdir(), "personal-agentic-os-"));
   await assert.rejects(
     installToolAdapters({ projectPath: root, tools: ["unknown-agent"] }),
     /unsupported tool/i,
@@ -110,7 +110,7 @@ test("rejects unsupported AI tool adapters", async () => {
 });
 
 test("creates an empty starter vault without project data", async () => {
-  const root = await mkdtemp(path.join(os.tmpdir(), "personal-agenting-os-"));
+  const root = await mkdtemp(path.join(os.tmpdir(), "personal-agentic-os-"));
   const vaultPath = path.join(root, "Vault");
 
   const result = await createStarterVault(vaultPath);
@@ -132,7 +132,7 @@ test("creates an empty starter vault without project data", async () => {
 });
 
 test("does not overwrite an existing user template", async () => {
-  const root = await mkdtemp(path.join(os.tmpdir(), "personal-agenting-os-"));
+  const root = await mkdtemp(path.join(os.tmpdir(), "personal-agentic-os-"));
   const templatePath = path.join(root, "Vault", "Templates", "Project.md");
   await mkdir(path.dirname(templatePath), { recursive: true });
   await writeFile(templatePath, "# قالب شخصی من\n");

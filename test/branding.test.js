@@ -5,7 +5,8 @@ import { readFile } from "node:fs/promises";
 test("public-facing package uses the Personal Agentic OS name",async()=>{
   for(const file of ["README.md","prompts/master-install.md","prompts/master-install-en.md","src/dashboard.js","src/onboarding.js","src/start-dashboard.js","docs/index.html"]){
     const source=await readFile(new URL(`../${file}`,import.meta.url),"utf8");
-    assert.doesNotMatch(source,/Personal Agenting OS/);
+    assert.match(source,/Personal Agentic OS/);
+    assert.doesNotMatch(source,/Personal Agentin[g] OS/);
   }
 });
 

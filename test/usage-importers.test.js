@@ -79,7 +79,7 @@ test("returns unavailable rather than estimating missing usage", () => {
 });
 
 test("syncs configured provider folders without persisting conversation text", async () => {
-  const root = await mkdtemp(path.join(os.tmpdir(), "agenting-os-usage-"));
+  const root = await mkdtemp(path.join(os.tmpdir(), "agentic-os-usage-"));
   const codexRoot = path.join(root, "codex");
   const geminiRoot = path.join(root, "gemini");
   const projectRoot = path.join(root, "projects", "launch");

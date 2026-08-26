@@ -52,7 +52,7 @@ Project names, file paths, Vault content, prompts, conversation text, token reco
 ```bash
 npm run optimize -- preview /absolute/project/path codex,claude,gemini
 npm run optimize -- apply /absolute/project/path codex,claude,gemini
-npm run optimize -- rollback /absolute/project/path/.agenting-os/changes/AUDIT_ID.json
+npm run optimize -- rollback /absolute/project/path/.agentic-os/changes/AUDIT_ID.json
 ```
 
 Preview makes no changes. Apply requires explicit confirmation and creates a local audit. Rollback restores the exact previous content and refuses to overwrite newer user edits.

@@ -97,7 +97,7 @@ const adapterFiles = {
 
 const adapterInstructions = `# Personal Agentic OS
 
-- Resolve project memory only through the local Agenting OS configuration.
+- Resolve project memory only through the local Agentic OS configuration.
 - Read the active project's context pack before continuing existing work.
 - Preserve only verified state, accepted decisions, open questions, and next actions.
 - Never store raw transcripts, hidden reasoning, credentials, or unrelated personal data.

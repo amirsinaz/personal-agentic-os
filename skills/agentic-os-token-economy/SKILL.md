@@ -1,9 +1,9 @@
 ---
-name: agenting-os-token-economy
-description: Reduce avoidable LLM context and tool usage while keeping required quality and evidence. Apply to Agenting OS work that selects context, compares usage, or records token and cost observations.
+name: agentic-os-token-economy
+description: Reduce avoidable LLM context and tool usage while keeping required quality and evidence. Apply to Agentic OS work that selects context, compares usage, or records token and cost observations.
 ---
 
-# Agenting OS Token Economy
+# Agentic OS Token Economy
 
 Prefer the smallest relevant context pack and deterministic local checks before loading more files or invoking another model. Do not reduce context when doing so would weaken safety, correctness, or the user's acceptance criteria.
 

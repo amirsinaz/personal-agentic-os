@@ -1,11 +1,11 @@
 ---
-name: agenting-os-memory
+name: agentic-os-memory
 description: Maintain concise, evidence-linked operational memory in a configured Personal Agentic OS. Apply when a project session produces decisions, verified state, open questions, or next actions worth preserving.
 ---
 
-# Agenting OS Memory
+# Agentic OS Memory
 
-Write only to the Vault selected in the local Agenting OS configuration. If no configured Vault is available, return a proposed memory update without writing it.
+Write only to the Vault selected in the local Agentic OS configuration. If no configured Vault is available, return a proposed memory update without writing it.
 
 ## Capture contract
 
