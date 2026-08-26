@@ -2,6 +2,8 @@
 
 Paste this prompt into Codex, Claude Code, or Gemini CLI.
 
+[Visual guide and latest version](https://personal-agenting-os.sina-zy.chatgpt.site) · [Repository and documentation](https://github.com/amirsinaz/personal-agenting-os)
+
 ```text
 ## Goal
 
