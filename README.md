@@ -4,6 +4,8 @@ A local-first system for managing multiple projects and maintaining shared worki
 
 The repository contains none of the creator's projects, file paths, prompts, costs, or sample usage data. After installation, the dashboard updates only from sources the user explicitly selects.
 
+Read the [security policy and local-first trust boundaries](SECURITY.md) before installation.
+
 ## What it includes
 
 - An empty Obsidian Starter Vault
