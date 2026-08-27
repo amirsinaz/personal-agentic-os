@@ -1,3 +1,7 @@
 node_modules/
+.sync-public.local.json
+.sync-public-staging/
+.sync-public.lock
+public-sync-report.json
 .DS_Store
 *.log

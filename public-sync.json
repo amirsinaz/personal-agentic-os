@@ -1,0 +1,14 @@
+{
+  "siteRoot": "../resource-site",
+  "siteMappings": [
+    {
+      "from": "prompts/master-install.md",
+      "to": "public/master-install.md"
+    },
+    {
+      "from": "prompts/master-install-en.md",
+      "to": "public/master-install-en.md"
+    }
+  ],
+  "privateMappings": []
+}

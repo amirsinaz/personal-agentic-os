@@ -8,6 +8,11 @@
     "dashboard": "node src/start-dashboard.js",
     "optimize": "node src/optimize-cli.js",
     "setup": "node src/setup-cli.js",
+    "sync-public": "node scripts/sync-public.js",
+    "sync-public:auto": "node scripts/auto-sync.js",
+    "sync-public:install-watcher": "node scripts/install-launch-agent.js",
+    "sync-public:check": "node scripts/sync-public.js --check",
+    "sync-public:publish": "node scripts/sync-public.js --publish",
     "test": "node --test"
   }
 }

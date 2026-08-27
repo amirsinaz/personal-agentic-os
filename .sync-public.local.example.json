@@ -1,0 +1,13 @@
+{
+  "sourceRoot": "/absolute/path/to/your/private-agentic-os",
+  "privateMappings": [
+    {
+      "from": "Templates",
+      "to": "templates"
+    },
+    {
+      "from": "Skills/public",
+      "to": "skills"
+    }
+  ]
+}

@@ -25,6 +25,20 @@ Read the [security policy and local-first trust boundaries](SECURITY.md) before 
 
 The [Persian master prompt](prompts/master-install.md) is also available.
 
+## Keep the public project in sync
+
+The repository includes a one-way, allowlist-based sync. It never copies a complete Vault. Only paths explicitly listed in the local configuration can enter the public repository, and every copied text file passes a privacy scan first.
+
+1. Copy `.sync-public.local.example.json` to `.sync-public.local.json`.
+2. Set `sourceRoot` to the absolute path of your private Agentic OS source.
+3. Keep `privateMappings` limited to generic templates, public skills, and other reviewed artifacts.
+4. Run `npm run sync-public` to prepare changes.
+5. Run `npm run sync-public:publish` to run all repository and website checks before reviewing, committing, and pushing the changes.
+
+Use `npm run sync-public:check` in CI or a scheduled local job to detect drift without writing files. The local configuration is ignored by Git and must never contain secrets.
+
+On macOS, run `npm run sync-public:install-watcher` once to create a private LaunchAgent from the path-free public template. When an approved template changes, `npm run sync-public:auto` runs the privacy checks and sync tests, commits only the `templates/` output, and pushes it to the configured GitHub remote. It never stages any other path, and your local paths are never committed.
+
 For direct setup after obtaining the repository:
 
 ```bash
