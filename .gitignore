@@ -3,5 +3,6 @@ node_modules/
 .sync-public-staging/
 .sync-public.lock
 public-sync-report.json
+.public-review/
 .DS_Store
 *.log

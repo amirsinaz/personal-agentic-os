@@ -11,6 +11,8 @@
     "sync-public": "node scripts/sync-public.js",
     "sync-public:auto": "node scripts/auto-sync.js",
     "sync-public:install-watcher": "node scripts/install-launch-agent.js",
+    "review-public": "node scripts/build-public-review.js",
+    "review-public:approve": "node scripts/approve-public-review.js",
     "sync-public:check": "node scripts/sync-public.js --check",
     "sync-public:publish": "node scripts/sync-public.js --publish",
     "test": "node --test"

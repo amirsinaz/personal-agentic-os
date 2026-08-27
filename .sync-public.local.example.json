@@ -1,5 +1,11 @@
 {
   "sourceRoot": "/absolute/path/to/your/private-agentic-os",
+  "reviewSources": [
+    {
+      "label": "Private dashboard",
+      "root": "/absolute/path/to/your/private-dashboard"
+    }
+  ],
   "privateMappings": [
     {
       "from": "Templates",

@@ -37,7 +37,7 @@ The repository includes a one-way, allowlist-based sync. It never copies a compl
 
 Use `npm run sync-public:check` in CI or a scheduled local job to detect drift without writing files. The local configuration is ignored by Git and must never contain secrets.
 
-On macOS, run `npm run sync-public:install-watcher` once to create a private LaunchAgent from the path-free public template. When an approved template changes, `npm run sync-public:auto` runs the privacy checks and sync tests, commits only the `templates/` output, and pushes it to the configured GitHub remote. It never stages any other path, and your local paths are never committed.
+On macOS, run `npm run sync-public:install-watcher` once to create a private LaunchAgent from the path-free public template. Changes in the private dashboard or approved templates create a local `.public-review/pending.json` proposal. Publishing stays blocked until the exact review ID is approved with `npm run review-public:approve -- <review-id>`. Approval records intent; adapting, testing, and publishing the generalized public version remain separate steps. Local paths and project data are never committed.
 
 For direct setup after obtaining the repository:
 
