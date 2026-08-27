@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { mkdtemp, readFile, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
@@ -46,4 +46,13 @@ test("applies the reviewed policy and rolls back to the exact prior content", as
   const rolledBack = await rollbackOptimization({ auditPath: applied.auditPath, confirmed: true });
   assert.equal(rolledBack.status, "rolled-back");
   assert.equal(await readFile(adapterPath, "utf8"), "# Personal rules\n");
+});
+
+test("rejects a rollback audit outside the project change log",async()=>{
+  const root=await mkdtemp(path.join(os.tmpdir(),"agentic-os-audit-"));
+  const projectPath=path.join(root,"project");
+  await mkdir(projectPath,{recursive:true});
+  const auditPath=path.join(root,"untrusted.json");
+  await writeFile(auditPath,JSON.stringify({status:"applied",projectPath,changes:[]}));
+  await assert.rejects(()=>rollbackOptimization({auditPath,confirmed:true}),/outside the project change log/);
 });

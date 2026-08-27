@@ -174,8 +174,9 @@ export async function syncUsageSources(configPath) {
     .sort((left, right) => right.totalTokens - left.totalTokens || left.project.localeCompare(right.project));
 
   const usagePath = path.join(path.dirname(configPath), "usage.json");
-  await writeFile(usagePath, `${JSON.stringify({ providers, byProject, records }, null, 2)}\n`, "utf8");
+  await writeFile(usagePath, `${JSON.stringify({ providers, byProject, records }, null, 2)}\n`, {encoding:"utf8",mode:0o600});
+  await chmod(usagePath,0o600);
   return { providers, byProject, records, usagePath };
 }
-import { readFile, readdir, writeFile } from "node:fs/promises";
+import { chmod, readFile, readdir, writeFile } from "node:fs/promises";
 import path from "node:path";

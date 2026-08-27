@@ -16,11 +16,15 @@ export function createDashboardServer(configPath) {
       response.writeHead(200, {
         "content-type": "text/html; charset=utf-8",
         "cache-control": "no-store",
+        "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "DENY",
+        "referrer-policy": "no-referrer",
       });
       response.end(renderDashboard(state));
-    } catch (error) {
+    } catch {
       response.writeHead(500, { "content-type": "text/plain; charset=utf-8" });
-      response.end(`Dashboard sync failed: ${error.message}`);
+      response.end("Dashboard sync failed. Check the local terminal for details.");
     }
   });
 }

@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { mkdir, mkdtemp, readFile, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, stat, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
@@ -23,6 +23,7 @@ test("creates a local workspace from user-provided paths with telemetry disabled
   });
 
   assert.equal(result.config.telemetry.enabled, false);
+  if(process.platform!=="win32")assert.equal((await stat(result.configPath)).mode&0o777,0o600);
   assert.equal("installId" in result.config.telemetry, false);
   assert.equal(result.config.vaultPath, vaultPath);
   assert.deepEqual(result.config.sources, { codex: codexPath });

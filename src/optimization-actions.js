@@ -75,6 +75,9 @@ export async function rollbackOptimization({ auditPath, confirmed }) {
   if (!path.isAbsolute(auditPath)) throw new Error("auditPath must be an absolute path");
   const audit = JSON.parse(await readFile(auditPath, "utf8"));
   if (audit.status !== "applied") throw new Error("Optimization is not applied");
+  if (!path.isAbsolute(audit.projectPath)) throw new Error("Invalid audit project path");
+  const expectedDirectory=path.join(path.resolve(audit.projectPath),".agentic-os","changes");
+  if(path.dirname(path.resolve(auditPath))!==expectedDirectory)throw new Error("Audit file is outside the project change log");
 
   for (const change of audit.changes) {
     const current = await readFile(path.join(audit.projectPath, change.file), "utf8");

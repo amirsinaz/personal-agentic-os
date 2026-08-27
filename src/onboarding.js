@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
+import { chmod, mkdir, readFile, readdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 import { syncUsageSources } from "./usage-importers.js";
@@ -49,6 +49,7 @@ export async function initializePersonalWorkspace({
   await writeFile(configPath, `${JSON.stringify(config, null, 2)}\n`, {
     encoding: "utf8",
     flag: "wx",
+    mode: 0o600,
   });
 
   return { config, configPath, createdExampleData: false };
@@ -85,7 +86,8 @@ export async function syncPersonalData(configPath) {
   });
   const recommendations = generateRecommendations({ usageRecords: usage.records, costs });
   const statePath = path.join(path.dirname(configPath), "state.json");
-  await writeFile(statePath, `${JSON.stringify({ projects, usage: usage.providers, usageByProject: usage.byProject, costs, budgetStatus, recommendations }, null, 2)}\n`, "utf8");
+  await writeFile(statePath, `${JSON.stringify({ projects, usage: usage.providers, usageByProject: usage.byProject, costs, budgetStatus, recommendations }, null, 2)}\n`, {encoding:"utf8",mode:0o600});
+  await chmod(statePath,0o600);
   return { projects, usage: usage.providers, usageByProject: usage.byProject, costs, budgetStatus, recommendations, statePath };
 }
 
