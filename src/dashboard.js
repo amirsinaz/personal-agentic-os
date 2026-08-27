@@ -14,6 +14,7 @@ export function renderDashboard(state) {
   const costs = state.costs;
   const budgets = state.budgetStatus ?? [];
   const recommendations = state.recommendations ?? [];
+  const agents = state.agents ?? [];
   const projectRows = projects.length
     ? projects.map((project) => `
       <article class="project">
@@ -56,6 +57,9 @@ export function renderDashboard(state) {
       return `<article class="recommendation"><div><strong>${recommendationTitles[item.id] ?? escapeHtml(item.id)}</strong><p>${evidence}</p></div><div class="recommendation-meta"><small>صرفه‌جویی: ${item.expectedSaving?.measurement === "actual" ? escapeHtml(item.expectedSaving.value) : "Unavailable"}</small><span>بررسی</span></div></article>`;
     }).join("")
     : `<p class="muted">پیشنهاد قابل‌اثباتی وجود ندارد.</p>`;
+  const agentRows = agents.length
+    ? agents.map((agent) => `<article class="agent-card"><div><span>${escapeHtml(agent.agentType)}</span><strong>${escapeHtml(agent.name)}</strong><p>${escapeHtml(agent.project)} · ${escapeHtml(agent.responsibility)}</p></div><div><code>${Number(agent.observationCount).toLocaleString("fa-IR")} مشاهده</code><small>${escapeHtml(agent.tools.join(", ") || "ابزار: unknown")}</small><small>${escapeHtml(agent.skills.join(", ") || "Skill: unknown")}</small></div></article>`).join("")
+    : `<p class="muted">هنوز Observation تأییدشده‌ای برای Agentها ثبت نشده است.</p>`;
 
   return `<!doctype html>
 <html lang="fa" dir="rtl">
@@ -84,6 +88,7 @@ export function renderDashboard(state) {
     .costs{margin-top:42px;display:grid;grid-template-columns:1fr 1fr;gap:12px;direction:ltr}.cost-card{background:#10192a;border:1px solid #35435f;padding:22px;border-radius:14px}.cost-card span{display:block;color:var(--muted);margin-bottom:12px}.cost-card strong{font:700 27px ui-monospace,monospace}
     .budgets{margin-top:42px}.budget-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.budget-card{background:var(--panel);border:1px solid #35435f;padding:20px;border-radius:14px}.budget-card span,.budget-card small{display:block;color:var(--muted)}.budget-card strong{display:block;direction:ltr;text-align:right;font:700 22px ui-monospace,monospace;margin:10px 0}.budget-card small{direction:ltr;text-align:right}
     .recommendations{margin-top:42px}.recommendation{display:flex;justify-content:space-between;gap:24px;padding:20px 0;border-bottom:1px solid #293650}.recommendation p{color:var(--muted);margin:8px 0 0}.recommendation-meta{display:grid;justify-items:end;gap:10px;white-space:nowrap}.recommendation-meta small{color:var(--muted);direction:ltr}.recommendation-meta span{color:var(--blue);border:1px solid #46618f;border-radius:999px;padding:6px 12px}
+    .agents-registry{margin-top:42px}.agent-card{display:flex;justify-content:space-between;gap:24px;padding:20px 0;border-bottom:1px solid #293650}.agent-card>div{display:grid;gap:7px}.agent-card span,.agent-card small{color:var(--muted);font-size:12px}.agent-card p{margin:0;color:var(--muted)}.agent-card code{direction:ltr;color:var(--mint)}
     @media(max-width:700px){main{padding-top:36px}.source{display:none}.spine{grid-template-columns:1fr}aside{border-left:0;border-bottom:1px solid var(--line);padding:0 0 24px}.content{padding:28px 0 0}.project{align-items:flex-start}.usage-grid,.costs,.budget-grid{grid-template-columns:1fr}}
   </style>
 </head>
@@ -95,5 +100,6 @@ export function renderDashboard(state) {
   <section class="costs"><article class="cost-card"><span>هزینه‌ی واقعی API</span><strong>${meteredCost}</strong></article><article class="cost-card"><span>اشتراک ماهانه</span><strong>${subscriptionCost}</strong></article></section>
   <section class="budgets"><h2>بودجه‌ی ماهانه</h2><div class="budget-grid">${budgetRows}</div></section>
   <section class="recommendations"><h2>پیشنهادهای بهینه‌سازی</h2>${recommendationRows}</section>
+  <section class="agents-registry"><h2>Personal Agent Registry</h2>${agentRows}</section>
 </main></body></html>`;
 }

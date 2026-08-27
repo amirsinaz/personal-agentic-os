@@ -5,6 +5,7 @@ import path from "node:path";
 import { syncUsageSources } from "./usage-importers.js";
 import { calculateBudgetStatus, calculateCosts } from "./costs.js";
 import { generateRecommendations } from "./recommendations.js";
+import { buildAgentProfiles } from "./agent-registry.js";
 
 function requireAbsolutePath(value, field) {
   if (!path.isAbsolute(value)) {
@@ -76,6 +77,14 @@ export async function syncPersonalData(configPath) {
   }
 
   projects.sort((left, right) => left.id.localeCompare(right.id));
+  const agentObservationsPath = path.join(config.vaultPath, "04-Agents", "observations.json");
+  const agentObservationsSource = await readFile(agentObservationsPath, "utf8").catch((error) => {
+    if (error?.code === "ENOENT") return "[]";
+    throw error;
+  });
+  const agentObservations = JSON.parse(agentObservationsSource);
+  if (!Array.isArray(agentObservations)) throw new Error("Agent observations must be a JSON array");
+  const agents = buildAgentProfiles(agentObservations);
   const usage = await syncUsageSources(configPath);
   const costs = calculateCosts({ usageRecords: usage.records, priceBook: config.priceBook ?? [], subscriptions: config.subscriptions ?? [] });
   const budgetStatus = calculateBudgetStatus({
@@ -86,9 +95,9 @@ export async function syncPersonalData(configPath) {
   });
   const recommendations = generateRecommendations({ usageRecords: usage.records, costs });
   const statePath = path.join(path.dirname(configPath), "state.json");
-  await writeFile(statePath, `${JSON.stringify({ projects, usage: usage.providers, usageByProject: usage.byProject, costs, budgetStatus, recommendations }, null, 2)}\n`, {encoding:"utf8",mode:0o600});
+  await writeFile(statePath, `${JSON.stringify({ projects, agents, usage: usage.providers, usageByProject: usage.byProject, costs, budgetStatus, recommendations }, null, 2)}\n`, {encoding:"utf8",mode:0o600});
   await chmod(statePath,0o600);
-  return { projects, usage: usage.providers, usageByProject: usage.byProject, costs, budgetStatus, recommendations, statePath };
+  return { projects, agents, usage: usage.providers, usageByProject: usage.byProject, costs, budgetStatus, recommendations, statePath };
 }
 
 const adapterFiles = {
@@ -129,6 +138,7 @@ const starterDirectories = [
   "01-Projects",
   "02-Global-Knowledge",
   "03-Sessions",
+  "04-Agents",
   "08-Reports",
   "09-Exports",
   "Templates",
@@ -156,6 +166,13 @@ export async function createStarterVault(vaultPath) {
   requireAbsolutePath(vaultPath, "vaultPath");
   for (const directory of starterDirectories) {
     await mkdir(path.join(vaultPath, directory), { recursive: true });
+  }
+
+  const observationsPath = path.join(vaultPath, "04-Agents", "observations.json");
+  try {
+    await writeFile(observationsPath, "[]\n", { encoding: "utf8", flag: "wx" });
+  } catch (error) {
+    if (error?.code !== "EEXIST") throw error;
   }
 
   const skipped = [];

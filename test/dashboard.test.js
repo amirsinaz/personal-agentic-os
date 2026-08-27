@@ -116,3 +116,13 @@ test("shows recommendations as advisory with unavailable savings", () => {
   assert.match(html, /صرفه‌جویی: Unavailable/);
   assert.match(html, /بررسی/);
 });
+
+test("shows evidence-backed agents and explicit unknown fields",()=>{
+  const html=renderDashboard({projects:[],agents:[{agentId:"codex",name:"Codex",agentType:"primary-agent",project:"launch",responsibility:"unknown",tools:["Codex desktop"],skills:[],observationCount:2,lastActivity:"2026-08-24T10:00:00Z",latestSourceSession:"s2",latestSourcePath:"logs/two",status:"observed"}]});
+  assert.match(html,/Agent Registry/);
+  assert.match(html,/Codex/);
+  assert.match(html,/launch/);
+  assert.match(html,/unknown/);
+  assert.match(html,/۲ مشاهده/);
+  assert.doesNotMatch(html,/Admin|Owner|Team/);
+});

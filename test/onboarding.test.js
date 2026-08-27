@@ -88,6 +88,18 @@ test("rebuilds project state from the user's vault after a local edit", async ()
   assert.deepEqual(saved.projects, second.projects);
 });
 
+test("syncs only explicit agent observations from the local registry",async()=>{
+  const root=await mkdtemp(path.join(os.tmpdir(),"personal-agentic-os-agents-"));
+  const vaultPath=path.join(root,"Vault");
+  await mkdir(path.join(vaultPath,"04-Agents"),{recursive:true});
+  await writeFile(path.join(vaultPath,"04-Agents","observations.json"),JSON.stringify([{agentId:"codex",agentType:"primary-agent",project:"launch",observedAt:"2026-08-24T10:00:00Z",sourceSession:"session-1",sourcePath:"local/session-1",evidence:{name:"Codex",responsibility:"Implementation",tool:"Codex",skills:["tdd"]}}]));
+  const initialized=await initializePersonalWorkspace({appDataPath:path.join(root,"app-data"),vaultPath,sources:{}});
+  const state=await syncPersonalData(initialized.configPath);
+  assert.equal(state.agents.length,1);
+  assert.equal(state.agents[0].project,"launch");
+  assert.equal(state.agents[0].responsibility,"Implementation");
+});
+
 test("installs context adapters only for the AI tools selected by the user", async () => {
   const root = await mkdtemp(path.join(os.tmpdir(), "personal-agentic-os-"));
 
@@ -122,10 +134,12 @@ test("creates an empty starter vault without project data", async () => {
     "01-Projects",
     "02-Global-Knowledge",
     "03-Sessions",
+    "04-Agents",
     "08-Reports",
     "09-Exports",
     "Templates",
   ]);
+  assert.deepEqual(JSON.parse(await readFile(path.join(vaultPath,"04-Agents","observations.json"),"utf8")),[]);
   const template = await readFile(path.join(vaultPath, "Templates", "Project.md"), "utf8");
   assert.match(template, /status: active/);
   assert.match(template, /## اقدام بعدی/);

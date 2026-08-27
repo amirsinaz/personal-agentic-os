@@ -25,6 +25,12 @@ Read the [security policy and local-first trust boundaries](SECURITY.md) before 
 
 The [Persian master prompt](prompts/master-install.md) is also available.
 
+## Personal Agent Registry
+
+The local dashboard can build a stable, project-aware Agent Registry from explicit observations stored in `04-Agents/observations.json`. It keeps primary agents and subagents separate, preserves source provenance, and shows responsibilities, tools, and skills only when evidence provides them. Missing fields remain `unknown`; the registry does not read hidden reasoning or infer ownership.
+
+Each observation must include `agentId`, `agentType`, `project`, `observedAt`, `sourceSession`, and `sourcePath`, plus an optional `evidence` object. A new starter Vault includes an empty observation file and never creates sample agents.
+
 ## Keep the public project in sync
 
 The repository includes a one-way, allowlist-based sync. It never copies a complete Vault. Only paths explicitly listed in the local configuration can enter the public repository, and every copied text file passes a privacy scan first.
