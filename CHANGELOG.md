@@ -1,5 +1,7 @@
 # Changelog
 
+<!-- Public, user-facing changes only. Exclude review automation, release operations, private analytics, deployment work, and maintainer-only fixes. -->
+
 ## 0.3.0 — 2026-08-28
 
 - Added a dashboard notice when a newer version is available.
