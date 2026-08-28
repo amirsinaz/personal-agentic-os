@@ -7,7 +7,7 @@ function escapeHtml(value) {
     .replaceAll("'", "&#039;");
 }
 
-export function renderDashboard(state) {
+export function renderDashboard(state,release={}) {
   const projects = state.projects ?? [];
   const usage = state.usage ?? [];
   const usageByProject = state.usageByProject ?? [];
@@ -15,6 +15,7 @@ export function renderDashboard(state) {
   const budgets = state.budgetStatus ?? [];
   const recommendations = state.recommendations ?? [];
   const agents = state.agents ?? [];
+  const releaseNotice=release.updateAvailable?`<aside class="release-notice"><div><strong>نسخه‌ی ${escapeHtml(release.latestVersion)} آماده است</strong><p>تغییرات را ببینید و پس از بررسی، نسخه را به‌روزرسانی کنید.</p></div><a href="${escapeHtml(release.releaseUrl)}" rel="noreferrer">دیدن نسخه‌ی جدید ↗</a></aside>`:"";
   const projectRows = projects.length
     ? projects.map((project) => `
       <article class="project">
@@ -89,10 +90,11 @@ export function renderDashboard(state) {
     .budgets{margin-top:42px}.budget-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.budget-card{background:var(--panel);border:1px solid #35435f;padding:20px;border-radius:14px}.budget-card span,.budget-card small{display:block;color:var(--muted)}.budget-card strong{display:block;direction:ltr;text-align:right;font:700 22px ui-monospace,monospace;margin:10px 0}.budget-card small{direction:ltr;text-align:right}
     .recommendations{margin-top:42px}.recommendation{display:flex;justify-content:space-between;gap:24px;padding:20px 0;border-bottom:1px solid #293650}.recommendation p{color:var(--muted);margin:8px 0 0}.recommendation-meta{display:grid;justify-items:end;gap:10px;white-space:nowrap}.recommendation-meta small{color:var(--muted);direction:ltr}.recommendation-meta span{color:var(--blue);border:1px solid #46618f;border-radius:999px;padding:6px 12px}
     .agents-registry{margin-top:42px}.agent-card{display:flex;justify-content:space-between;gap:24px;padding:20px 0;border-bottom:1px solid #293650}.agent-card>div{display:grid;gap:7px}.agent-card span,.agent-card small{color:var(--muted);font-size:12px}.agent-card p{margin:0;color:var(--muted)}.agent-card code{direction:ltr;color:var(--mint)}
+    .release-notice{display:flex;align-items:center;justify-content:space-between;gap:24px;margin:0 0 32px;padding:20px 24px;border:1px solid #a77732;background:#30240f;color:var(--ink)}.release-notice strong{font-size:18px}.release-notice p{margin:7px 0 0;color:#e5d0a5}.release-notice a{color:#ffd58c;white-space:nowrap}
     @media(max-width:700px){main{padding-top:36px}.source{display:none}.spine{grid-template-columns:1fr}aside{border-left:0;border-bottom:1px solid var(--line);padding:0 0 24px}.content{padding:28px 0 0}.project{align-items:flex-start}.usage-grid,.costs,.budget-grid{grid-template-columns:1fr}}
   </style>
 </head>
-<body><main>
+<body><main>${releaseNotice}
   <header><div><div class="eyebrow">LOCAL OPERATIONAL MEMORY</div><h1>وضعیت واقعی پروژه‌های شما</h1></div><div class="source">VAULT → SYNC → DASHBOARD</div></header>
   <section class="spine"><aside><strong>${projects.length}</strong><span>پروژه در حافظه‌ی محلی</span><p class="live">● LOCAL DATA</p></aside><div class="content"><h2>پروژه‌ها</h2>${projectRows}</div></section>
   <section class="usage"><h2>مصرف ثبت‌شده بر اساس ابزار</h2><div class="usage-grid">${usageRows}</div></section>

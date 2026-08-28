@@ -22,6 +22,7 @@ export async function initializePersonalWorkspace({
   subscriptions = [],
   budgets = [],
   telemetryConsent = false,
+  installType = "full",
 }) {
   requireAbsolutePath(appDataPath, "appDataPath");
   requireAbsolutePath(vaultPath, "vaultPath");
@@ -39,6 +40,7 @@ export async function initializePersonalWorkspace({
     priceBook,
     subscriptions,
     budgets,
+    installType,
     telemetry: telemetryConsent
       ? { enabled: true, installId: randomUUID() }
       : { enabled: false },

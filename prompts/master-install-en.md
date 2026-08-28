@@ -22,13 +22,14 @@ Install Personal Agentic OS locally from `https://github.com/amirsinaz/personal-
 1. Detect whether you are Codex, Claude Code, or Gemini CLI. If detection is uncertain, ask only this question.
 2. If Obsidian is missing, briefly explain that it is the local memory layer and reference only `https://obsidian.md/download`. Ask before installation. Also explain Dashboard-only mode and its memory limitation.
 3. After approval, obtain the repository and inspect its README, skills guide, and privacy documentation. Stop if a required file is unavailable.
-4. Ask me one item at a time: existing or new Vault, Vault path, LLM tools, each tool's local data path, confirmed project roots, Starter or Full install, monthly subscriptions, confirmed model price book, overall or project budgets, and telemetry consent.
+4. Ask me one item at a time: existing or new Vault, Vault path, LLM tools, each tool's local data path, confirmed project roots, Starter or Full install, monthly subscriptions, confirmed model price book, overall or project budgets, telemetry consent, and permission for a weekly version check.
 5. Before changing anything, show a short preview listing files to create, skills, dependencies, and destination paths. Wait for approval.
 6. Run the repository's official setup wizard. Install only the selected adapters: `AGENTS.md` for Codex, `CLAUDE.md` for Claude Code, and `GEMINI.md` for Gemini CLI.
 7. For a new Vault, create only the generic structure and empty templates. For an existing Vault, show a backup plan and do not overwrite files without approval.
 8. Run the first sync. The dashboard must contain only my system's data. Show `Empty` or `Unavailable` when evidence is missing; never create demo values.
 9. With my permission, create one local test project, change its status, and sync again to prove the dashboard updates.
 10. If a Lean Context recommendation is available, show Preview first. Apply and Rollback each require separate confirmation. Never claim savings without a controlled comparison.
+11. Only with my explicit approval, activate the operating-system template from `ops` to run `npm run update:check -- CONFIG_PATH` once a week. It reads only the public release manifest, never applies an update automatically, and writes an update notice for the local dashboard.
 
 ## Done
 

@@ -7,6 +7,7 @@ import {
   syncPersonalData,
 } from "./onboarding.js";
 import { sendInstallSuccess } from "./telemetry.js";
+import {CURRENT_VERSION} from "./version.js";
 
 const telemetryEndpoint = "https://myagenticstack.com/api/install";
 
@@ -46,6 +47,7 @@ export async function runSetupWizard({ ask }) {
     subscriptions,
     budgets,
     telemetryConsent,
+    installType,
   });
   if (shouldCreateStarterVault) await createStarterVault(vaultPath);
   const adapters = await installToolAdapters({ projectPath, tools });
@@ -53,7 +55,7 @@ export async function runSetupWizard({ ask }) {
   const telemetry = await sendInstallSuccess({
     telemetry: initialized.config.telemetry,
     endpoint: telemetryEndpoint,
-    version: "0.1.0",
+    version: CURRENT_VERSION,
     platform: process.platform,
     installType,
   });

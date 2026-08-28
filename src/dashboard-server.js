@@ -1,5 +1,7 @@
 import http from "node:http";
 
+import { readFile } from "node:fs/promises";
+import path from "node:path";
 import { renderDashboard } from "./dashboard.js";
 import { syncPersonalData } from "./onboarding.js";
 
@@ -13,6 +15,7 @@ export function createDashboardServer(configPath) {
 
     try {
       const state = await syncPersonalData(configPath);
+      const release=JSON.parse(await readFile(path.join(path.dirname(configPath),"update-status.json"),"utf8").catch(()=>"{}"));
       response.writeHead(200, {
         "content-type": "text/html; charset=utf-8",
         "cache-control": "no-store",
@@ -21,7 +24,7 @@ export function createDashboardServer(configPath) {
         "x-frame-options": "DENY",
         "referrer-policy": "no-referrer",
       });
-      response.end(renderDashboard(state));
+      response.end(renderDashboard(state,release));
     } catch {
       response.writeHead(500, { "content-type": "text/plain; charset=utf-8" });
       response.end("Dashboard sync failed. Check the local terminal for details.");

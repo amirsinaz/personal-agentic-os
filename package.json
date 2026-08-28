@@ -1,6 +1,6 @@
 {
   "name": "personal-agentic-os",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "license": "MIT",
   "private": true,
   "type": "module",
@@ -8,6 +8,7 @@
     "dashboard": "node src/start-dashboard.js",
     "optimize": "node src/optimize-cli.js",
     "setup": "node src/setup-cli.js",
+    "update:check": "node src/check-update-cli.js",
     "sync-public": "node scripts/sync-public.js",
     "sync-public:auto": "node scripts/auto-sync.js",
     "sync-public:install-watcher": "node scripts/install-launch-agent.js",

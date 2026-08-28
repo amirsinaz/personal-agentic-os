@@ -1,0 +1,1 @@
+0 10 * * 1 NODE_PATH REPO_PATH/src/check-update-cli.js CONFIG_PATH

@@ -126,3 +126,9 @@ test("shows evidence-backed agents and explicit unknown fields",()=>{
   assert.match(html,/۲ مشاهده/);
   assert.doesNotMatch(html,/Admin|Owner|Team/);
 });
+
+test("shows a safe release notice when a newer version is available",()=>{
+  const html=renderDashboard({projects:[]},{currentVersion:"0.2.0",latestVersion:"0.3.0",updateAvailable:true,releaseUrl:"https://github.com/amirsinaz/personal-agentic-os/releases/tag/v0.3.0"});
+  assert.match(html,/نسخه‌ی 0\.3\.0 آماده است/);
+  assert.match(html,/releases\/tag\/v0\.3\.0/);
+});
