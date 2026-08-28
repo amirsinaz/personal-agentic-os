@@ -2,6 +2,12 @@
 
 <!-- Public, user-facing changes only. Exclude review automation, release operations, private analytics, deployment work, and maintainer-only fixes. -->
 
+## 0.3.1 — 2026-08-28
+
+- بخش پیشنهادهای بهینه‌سازی در داشبورد خواناتر و فشرده‌تر شد.
+- وضعیت «نیاز به بررسی» و راهنمای آن اضافه شد؛ هیچ تغییری بدون تأیید کاربر اعمال نمی‌شود.
+- نمایش شواهد و پیشنهادها در موبایل اصلاح شد.
+
 ## 0.3.0 — 2026-08-28
 
 - Added a dashboard notice when a newer version is available.

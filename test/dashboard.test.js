@@ -113,8 +113,18 @@ test("shows recommendations as advisory with unavailable savings", () => {
   assert.match(html, /پیشنهادهای بهینه‌سازی/);
   assert.match(html, /تخصیص مصرف به پروژه‌ها را کامل کنید/);
   assert.match(html, /1,000/);
-  assert.match(html, /صرفه‌جویی: Unavailable/);
+  assert.match(html, /صرفه‌جویی/);
   assert.match(html, /بررسی/);
+  assert.match(html, /نیاز به بررسی/);
+  assert.match(html, /راهنمای وضعیت پیشنهاد/);
+  assert.match(html, /داده‌ی کافی برای محاسبه وجود ندارد/);
+});
+
+test("uses a compact responsive optimization summary",()=>{
+  const html=renderDashboard({projects:[],recommendations:[]});
+  assert.match(html,/optimization-summary/);
+  assert.match(html,/recommendation-grid/);
+  assert.match(html,/@media\(max-width:700px\)/);
 });
 
 test("shows evidence-backed agents and explicit unknown fields",()=>{

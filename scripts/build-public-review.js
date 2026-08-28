@@ -3,7 +3,7 @@ import { spawnSync } from "node:child_process";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { createHash } from "node:crypto";
-import { assertReviewSource, buildReviewId, buildReviewSummary, parsePorcelain } from "./public-review-lib.js";
+import { assertReviewSource, buildReviewId, buildReviewSummary, parsePorcelain, reviewStatusFor } from "./public-review-lib.js";
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const config = JSON.parse(await readFile(path.join(repoRoot, ".sync-public.local.json"), "utf8"));
@@ -32,10 +32,12 @@ if (!detected.length) {
   process.exit(0);
 }
 const id = buildReviewId(fingerprints);
-const proposal = { id, status: "pending", detectedAt: new Date().toISOString(), sources: detected };
-const lines = [`# Public release review ${id}`, "", "Status: pending — publishing is blocked until explicit approval.", ""];
+const previous=JSON.parse(await readFile(path.join(reviewRoot,"pending.json"),"utf8").catch(()=>"null"));
+const status=reviewStatusFor(previous,id);
+const proposal = { id, status, detectedAt: previous?.id===id?previous.detectedAt:new Date().toISOString(), sources: detected };
+const lines = [`# Public release review ${id}`, "", `Status: ${status}${status === "pending" ? " — publishing is blocked until explicit approval." : ""}`, ""];
 for (const source of detected) lines.push(`## ${source.label}`, "", `Capabilities: ${source.capabilities.join(", ")}`, `Files safe to review: ${source.files.length}`, `Private paths excluded: ${source.excluded}`, "", ...source.files.map(({ status, file }) => `- \`${status.trim() || "M"}\` ${file}`), "");
 await mkdir(reviewRoot, { recursive: true });
 await writeFile(path.join(reviewRoot, "pending.json"), `${JSON.stringify(proposal, null, 2)}\n`, { mode: 0o600 });
 await writeFile(path.join(reviewRoot, "pending.md"), `${lines.join("\n")}\n`, { mode: 0o600 });
-console.log(`Public review pending: ${id}`);
+console.log(status === "approved" ? `Public review already approved: ${id}` : `Public review pending: ${id}`);

@@ -38,3 +38,7 @@ export function assertReviewSource(root) {
 export function buildReviewId(sources){
   return createHash("sha256").update(JSON.stringify(sources)).digest("hex").slice(0,12);
 }
+
+export function reviewStatusFor(previous, nextId) {
+  return previous?.id === nextId && previous.status === "approved" ? "approved" : "pending";
+}
