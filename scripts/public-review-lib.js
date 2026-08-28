@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import path from "node:path";
 
 const PRIVATE_SEGMENTS = ["01-Projects", "02-Global-Knowledge", "03-Sessions", "08-Reports", "09-Exports", ".obsidian", ".env"];
@@ -32,4 +33,8 @@ export function buildReviewSummary(files) {
 
 export function assertReviewSource(root) {
   if (!path.isAbsolute(root)) throw new Error("Review source root must be absolute");
+}
+
+export function buildReviewId(sources){
+  return createHash("sha256").update(JSON.stringify(sources)).digest("hex").slice(0,12);
 }
