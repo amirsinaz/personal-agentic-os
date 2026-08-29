@@ -15,3 +15,15 @@ test("static fallback presents screenshots as a vertical flow, not a horizontal 
   assert.doesNotMatch(source,/scroll-snap-type/);
   assert.match(source,/\.slides\{display:grid/);
 });
+
+test("master prompts cover the complete connection and continuous-memory funnel",async()=>{
+  for(const file of ["master-install.md","master-install-en.md"]){
+    const prompt=await readFile(new URL(`../prompts/${file}`,import.meta.url),"utf8");
+    assert.match(prompt,/project candidates|کاندیداهای پروژه/i);
+    assert.match(prompt,/canonical project map|نقشه‌ی نهایی پروژه‌ها/i);
+    assert.match(prompt,/content markers|نشانه‌های محتوایی/i);
+    assert.match(prompt,/recurring sync|همگام‌سازی مداوم/i);
+    assert.match(prompt,/new tool|ابزار جدید/i);
+    assert.match(prompt,/dashboard/i);
+  }
+});

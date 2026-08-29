@@ -142,3 +142,18 @@ test("shows a safe release notice when a newer version is available",()=>{
   assert.match(html,/نسخه‌ی 0\.3\.0 آماده است/);
   assert.match(html,/releases\/tag\/v0\.3\.0/);
 });
+
+test("shows connected tools, shared projects, and the latest incremental sync",()=>{
+  const html=renderDashboard({
+    projects:[],
+    connections:[{id:"codex",status:"configured"},{id:"gemini",status:"configured"}],
+    canonicalProjects:[{id:"site",name:"Site",tools:["codex","gemini"],shared:true}],
+    lastSync:{at:"2026-08-29T11:00:00.000Z",status:"completed",changes:{created:[],updated:["site"],unchanged:[],removed:[]}},
+  });
+  assert.match(html,/ابزارهای متصل/);
+  assert.match(html,/Codex/);
+  assert.match(html,/Gemini/);
+  assert.match(html,/پروژه‌ی مشترک/);
+  assert.match(html,/آخرین همگام‌سازی/);
+  assert.match(html,/site/);
+});

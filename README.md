@@ -16,6 +16,9 @@ Read the [security policy and local-first trust boundaries](SECURITY.md) before 
 - Overall and per-project budgets with `actual`, `estimated`, and `unavailable` labels
 - Advisory optimization recommendations
 - A reversible Preview → Apply → Rollback workflow for Lean Context rules
+- An approval-gated canonical project map across selected AI tools
+- Incremental memory sync with created, updated, unchanged, and removed project states
+- Independent connection records and optional recurring sync templates for macOS, Linux, and Windows
 
 ## Recommended installation
 
@@ -50,8 +53,11 @@ For direct setup after obtaining the repository:
 ```bash
 npm install
 npm run setup
+npm run sync -- /absolute/path/to/config.json
 npm run dashboard -- /absolute/path/to/config.json
 ```
+
+During setup, the wizard shows the proposed tool connections and canonical project map before it writes memory. Projects are merged only by exact path, repository identity, or strong content-marker evidence. Name similarity alone is never enough. With approval, an operating-system template from `ops` can run the same incremental sync command periodically and keep the dashboard state current.
 
 ## If Obsidian is not installed
 

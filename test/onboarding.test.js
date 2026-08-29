@@ -5,6 +5,7 @@ import path from "node:path";
 import test from "node:test";
 
 import {
+  createCanonicalProjectIndexes,
   createStarterVault,
   initializePersonalWorkspace,
   installToolAdapters,
@@ -156,4 +157,15 @@ test("does not overwrite an existing user template", async () => {
 
   assert.deepEqual(result.skipped, ["Templates/Project.md"]);
   assert.equal(await readFile(templatePath, "utf8"), "# قالب شخصی من\n");
+});
+
+test("creates approved canonical project indexes without copying raw conversations",async()=>{
+  const root=await mkdtemp(path.join(os.tmpdir(),"agentic-os-canonical-"));
+  const vaultPath=path.join(root,"Vault");
+  const result=await createCanonicalProjectIndexes(vaultPath,[{id:"site",name:"Site",tools:["codex","gemini"],shared:true,matchReason:"repository",roots:["/private/a","/private/b"]}]);
+  assert.deepEqual(result.created,["site"]);
+  const content=await readFile(path.join(vaultPath,"01-Projects","site","00-Index.md"),"utf8");
+  assert.match(content,/tools: codex, gemini/);
+  assert.match(content,/shared: true/);
+  assert.doesNotMatch(content,/\/private\/a|\/private\/b|transcript/i);
 });

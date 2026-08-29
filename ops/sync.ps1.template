@@ -1,0 +1,2 @@
+Set-Location "REPOSITORY_PATH"
+npm run sync -- "CONFIG_PATH"

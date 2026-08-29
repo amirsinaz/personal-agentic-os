@@ -15,6 +15,9 @@ export function renderDashboard(state,release={}) {
   const budgets = state.budgetStatus ?? [];
   const recommendations = state.recommendations ?? [];
   const agents = state.agents ?? [];
+  const connections = state.connections ?? [];
+  const canonicalProjects = state.canonicalProjects ?? [];
+  const lastSync = state.lastSync;
   const releaseNotice=release.updateAvailable?`<aside class="release-notice"><div><strong>نسخه‌ی ${escapeHtml(release.latestVersion)} آماده است</strong><p>تغییرات را ببینید و پس از بررسی، نسخه را به‌روزرسانی کنید.</p></div><a href="${escapeHtml(release.releaseUrl)}" rel="noreferrer">دیدن نسخه‌ی جدید ↗</a></aside>`:"";
   const projectRows = projects.length
     ? projects.map((project) => `
@@ -27,6 +30,10 @@ export function renderDashboard(state,release={}) {
         <p>از قالب <code>Templates/Project.md</code> استفاده کنید و پروژه را در پوشه‌ی <code>01-Projects</code> قرار دهید.</p>
       </section>`;
   const providerNames = { codex: "Codex", claude: "Claude", gemini: "Gemini" };
+  const connectionNames = connections.length ? connections.map((item)=>providerNames[item.id] ?? escapeHtml(item.id)).join("، ") : "بدون اتصال";
+  const sharedProjectCount = canonicalProjects.filter((project)=>project.shared).length;
+  const changedProjects = lastSync ? [...(lastSync.changes?.created ?? []),...(lastSync.changes?.updated ?? []),...(lastSync.changes?.removed ?? [])] : [];
+  const syncSummary = lastSync ? `${escapeHtml(lastSync.status)} · ${escapeHtml(lastSync.at)}${changedProjects.length ? ` · ${changedProjects.map(escapeHtml).join("، ")}` : ""}` : "هنوز اجرا نشده";
   const usageRows = usage.length
     ? usage.map((item) => `<article class="usage-row"><strong>${providerNames[item.provider] ?? escapeHtml(item.provider)}</strong><span>${item.measurement === "actual" ? Number(item.totalTokens).toLocaleString("en-US") : "Unavailable"}</span><small>${item.measurement}</small></article>`).join("")
     : `<p class="muted">هنوز منبع مصرفی متصل نشده است.</p>`;
@@ -77,6 +84,7 @@ export function renderDashboard(state,release={}) {
     .eyebrow{direction:ltr;text-align:left;color:var(--mint);font:700 13px/1.4 ui-monospace,monospace;letter-spacing:2px}
     h1{font-size:clamp(38px,7vw,72px);line-height:1.25;margin:8px 0 0;max-width:760px}
     .source{direction:ltr;text-align:left;color:var(--muted);font:600 13px/1.7 ui-monospace,monospace}
+    .system-status{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;margin-top:28px;background:var(--line);border:1px solid var(--line)}.system-status article{background:var(--panel);padding:17px}.system-status span{display:block;color:var(--muted);font-size:12px;margin-bottom:7px}.system-status strong{font-size:15px;line-height:1.7}.system-status article:last-child strong{font:600 12px/1.7 ui-monospace,monospace;overflow-wrap:anywhere}
     .spine{display:grid;grid-template-columns:190px 1fr;margin-top:44px;min-height:460px}
     aside{border-left:1px solid var(--line);padding-left:28px;color:var(--muted)}
     aside strong{display:block;color:var(--ink);font-size:28px;margin-bottom:8px}.live{color:var(--mint);font:700 12px ui-monospace,monospace}
@@ -92,11 +100,12 @@ export function renderDashboard(state,release={}) {
     .recommendations{margin-top:42px}.optimization-summary{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:18px}.optimization-summary h2{margin:0}.status-help{position:relative}.status-help summary{cursor:pointer;color:var(--blue);border:1px solid #46618f;border-radius:999px;padding:7px 12px;list-style:none}.status-help p{position:absolute;z-index:2;left:0;width:min(320px,80vw);margin:8px 0 0;padding:14px;background:#172138;border:1px solid var(--line);border-radius:12px;color:var(--muted);line-height:1.8}.recommendation-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.recommendation{display:grid;grid-template-columns:minmax(0,1fr) minmax(160px,.6fr);gap:24px;align-items:start;background:var(--panel);border:1px solid #35435f;padding:20px;border-radius:14px;min-width:0}.recommendation-copy{min-width:0}.recommendation p{color:var(--muted);margin:8px 0 0;overflow-wrap:anywhere}.recommendation-meta{display:grid;align-content:start;gap:7px;min-width:0}.recommendation-meta small{color:var(--muted)}.recommendation-meta strong{font-size:14px;line-height:1.7;overflow-wrap:anywhere}.status{width:max-content;border-radius:999px;padding:6px 10px;font-size:12px}.status-review{color:#ffb4aa;border:1px solid #8f4c4c;background:#361c20}
     .agents-registry{margin-top:42px}.agent-card{display:flex;justify-content:space-between;gap:24px;padding:20px 0;border-bottom:1px solid #293650}.agent-card>div{display:grid;gap:7px}.agent-card span,.agent-card small{color:var(--muted);font-size:12px}.agent-card p{margin:0;color:var(--muted)}.agent-card code{direction:ltr;color:var(--mint)}
     .release-notice{display:flex;align-items:center;justify-content:space-between;gap:24px;margin:0 0 32px;padding:20px 24px;border:1px solid #a77732;background:#30240f;color:var(--ink)}.release-notice strong{font-size:18px}.release-notice p{margin:7px 0 0;color:#e5d0a5}.release-notice a{color:#ffd58c;white-space:nowrap}
-    @media(max-width:700px){main{padding-top:36px}.source{display:none}.spine{grid-template-columns:1fr}aside{border-left:0;border-bottom:1px solid var(--line);padding:0 0 24px}.content{padding:28px 0 0}.project{align-items:flex-start}.usage-grid,.costs,.budget-grid,.recommendation-grid{grid-template-columns:1fr}.optimization-summary{align-items:flex-start}.recommendation{grid-template-columns:1fr}.recommendation-meta{border-top:1px solid #293650;padding-top:14px}.release-notice{align-items:flex-start;flex-direction:column}}
+    @media(max-width:700px){main{padding-top:36px}.source{display:none}.system-status{grid-template-columns:1fr}.spine{grid-template-columns:1fr}aside{border-left:0;border-bottom:1px solid var(--line);padding:0 0 24px}.content{padding:28px 0 0}.project{align-items:flex-start}.usage-grid,.costs,.budget-grid,.recommendation-grid{grid-template-columns:1fr}.optimization-summary{align-items:flex-start}.recommendation{grid-template-columns:1fr}.recommendation-meta{border-top:1px solid #293650;padding-top:14px}.release-notice{align-items:flex-start;flex-direction:column}}
   </style>
 </head>
 <body><main>${releaseNotice}
   <header><div><div class="eyebrow">LOCAL OPERATIONAL MEMORY</div><h1>وضعیت واقعی پروژه‌های شما</h1></div><div class="source">VAULT → SYNC → DASHBOARD</div></header>
+  <section class="system-status"><article><span>ابزارهای متصل</span><strong>${connectionNames}</strong></article><article><span>پروژه‌ی مشترک</span><strong>${sharedProjectCount.toLocaleString("fa-IR")}</strong></article><article><span>آخرین همگام‌سازی</span><strong>${syncSummary}</strong></article></section>
   <section class="spine"><aside><strong>${projects.length}</strong><span>پروژه در حافظه‌ی محلی</span><p class="live">● LOCAL DATA</p></aside><div class="content"><h2>پروژه‌ها</h2>${projectRows}</div></section>
   <section class="usage"><h2>مصرف ثبت‌شده بر اساس ابزار</h2><div class="usage-grid">${usageRows}</div></section>
   <section class="allocation"><h2>مصرف براساس پروژه</h2>${projectUsageRows}</section>

@@ -2,12 +2,14 @@ import { mkdir } from "node:fs/promises";
 
 import {
   createStarterVault,
+  createCanonicalProjectIndexes,
   initializePersonalWorkspace,
   installToolAdapters,
-  syncPersonalData,
 } from "./onboarding.js";
+import { runIncrementalSync } from "./sync-runner.js";
 import { sendInstallSuccess } from "./telemetry.js";
 import {CURRENT_VERSION} from "./version.js";
+import { buildConnectionRegistry, identifyCanonicalProjects } from "./connections.js";
 
 const telemetryEndpoint = "https://myagenticstack.com/api/install";
 
@@ -31,11 +33,18 @@ export async function runSetupWizard({ ask }) {
   const tools = await ask("tools");
   const sources = await ask("sources");
   const projectRoots = await ask("projectRoots");
+  const projectCandidates = await ask("projectCandidates");
+  const syncMode = await ask("syncMode");
   const priceBook = await ask("priceBook");
   const subscriptions = await ask("subscriptions");
   const budgets = await ask("budgets");
   const telemetryConsent = await ask("telemetryConsent");
   const shouldCreateStarterVault = await ask("createStarterVault");
+  const connections = buildConnectionRegistry({ tools, sources });
+  const canonicalProjects = identifyCanonicalProjects(projectCandidates ?? []);
+  const preview = { connections, projects: canonicalProjects, syncMode: syncMode || "manual" };
+  const approved = await ask("approvePlan", preview);
+  if (!approved) return { status: "review-required", preview };
 
   await mkdir(projectPath, { recursive: true });
   const initialized = await initializePersonalWorkspace({
@@ -46,12 +55,16 @@ export async function runSetupWizard({ ask }) {
     priceBook,
     subscriptions,
     budgets,
+    connections,
+    canonicalProjects,
+    syncMode: syncMode || "manual",
     telemetryConsent,
     installType,
   });
   if (shouldCreateStarterVault) await createStarterVault(vaultPath);
+  await createCanonicalProjectIndexes(vaultPath, canonicalProjects);
   const adapters = await installToolAdapters({ projectPath, tools });
-  const state = await syncPersonalData(initialized.configPath);
+  const state = await runIncrementalSync(initialized.configPath);
   const telemetry = await sendInstallSuccess({
     telemetry: initialized.config.telemetry,
     endpoint: telemetryEndpoint,
@@ -65,6 +78,10 @@ export async function runSetupWizard({ ask }) {
     configPath: initialized.configPath,
     adapters: adapters.created,
     projects: state.projects,
+    connections: state.connections,
+    canonicalProjects: state.canonicalProjects,
+    syncMode: state.syncMode,
+    lastSync: state.lastSync,
     telemetryStatus: telemetry.status,
   };
 }

@@ -21,6 +21,9 @@ export async function initializePersonalWorkspace({
   priceBook = [],
   subscriptions = [],
   budgets = [],
+  connections = [],
+  canonicalProjects = [],
+  syncMode = "manual",
   telemetryConsent = false,
   installType = "full",
 }) {
@@ -40,6 +43,9 @@ export async function initializePersonalWorkspace({
     priceBook,
     subscriptions,
     budgets,
+    connections,
+    canonicalProjects,
+    syncMode,
     installType,
     telemetry: telemetryConsent
       ? { enabled: true, installId: randomUUID() }
@@ -97,9 +103,9 @@ export async function syncPersonalData(configPath) {
   });
   const recommendations = generateRecommendations({ usageRecords: usage.records, costs });
   const statePath = path.join(path.dirname(configPath), "state.json");
-  await writeFile(statePath, `${JSON.stringify({ projects, agents, usage: usage.providers, usageByProject: usage.byProject, costs, budgetStatus, recommendations }, null, 2)}\n`, {encoding:"utf8",mode:0o600});
+  await writeFile(statePath, `${JSON.stringify({ projects, canonicalProjects: config.canonicalProjects ?? [], connections: config.connections ?? [], syncMode: config.syncMode ?? "manual", agents, usage: usage.providers, usageByProject: usage.byProject, costs, budgetStatus, recommendations }, null, 2)}\n`, {encoding:"utf8",mode:0o600});
   await chmod(statePath,0o600);
-  return { projects, agents, usage: usage.providers, usageByProject: usage.byProject, costs, budgetStatus, recommendations, statePath };
+  return { projects, canonicalProjects: config.canonicalProjects ?? [], connections: config.connections ?? [], syncMode: config.syncMode ?? "manual", agents, usage: usage.providers, usageByProject: usage.byProject, costs, budgetStatus, recommendations, statePath };
 }
 
 const adapterFiles = {
@@ -194,4 +200,27 @@ export async function createStarterVault(vaultPath) {
     skipped,
     createdProjectData: false,
   };
+}
+
+export async function createCanonicalProjectIndexes(vaultPath, projects = []) {
+  requireAbsolutePath(vaultPath, "vaultPath");
+  const created = [];
+  const skipped = [];
+  for (const project of projects) {
+    if (!/^[\p{L}\p{N}][\p{L}\p{N}._-]*$/u.test(project.id)) throw new Error(`Unsafe canonical project id: ${project.id}`);
+    const projectDirectory = path.join(vaultPath, "01-Projects", project.id);
+    await mkdir(projectDirectory, { recursive: true });
+    const projectPath = path.join(projectDirectory, "00-Index.md");
+    const name = String(project.name || project.id).replace(/[\r\n]+/g, " ").trim();
+    const tools = [...new Set(project.tools ?? [])].sort().join(", ");
+    const content = `---\ntype: project\nstatus: active\ntools: ${tools}\nshared: ${Boolean(project.shared)}\n---\n\n# ${name}\n\n## وضعیت فعلی\n\nهنوز بررسی نشده است.\n\n## تصمیم‌ها\n\n## پرسش‌های باز\n\n## اقدام بعدی\n`;
+    try {
+      await writeFile(projectPath, content, { encoding: "utf8", flag: "wx" });
+      created.push(project.id);
+    } catch (error) {
+      if (error?.code !== "EEXIST") throw error;
+      skipped.push(project.id);
+    }
+  }
+  return { created, skipped };
 }
