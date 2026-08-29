@@ -18,6 +18,9 @@ export function renderDashboard(state,release={}) {
   const connections = state.connections ?? [];
   const canonicalProjects = state.canonicalProjects ?? [];
   const lastSync = state.lastSync;
+  const contextPacks=state.contextPacks??[];
+  const memoryHealth=state.memoryHealth;
+  const memoryStatus=memoryHealth?.status==="healthy"?"سالم":memoryHealth?.status==="needs-review"?"نیازمند بررسی":"هنوز بررسی نشده";
   const releaseNotice=release.updateAvailable?`<aside class="release-notice"><div><strong>نسخه‌ی ${escapeHtml(release.latestVersion)} آماده است</strong><p>تغییرات را ببینید و پس از بررسی، نسخه را به‌روزرسانی کنید.</p></div><a href="${escapeHtml(release.releaseUrl)}" rel="noreferrer">دیدن نسخه‌ی جدید ↗</a></aside>`:"";
   const projectRows = projects.length
     ? projects.map((project) => `
@@ -84,7 +87,7 @@ export function renderDashboard(state,release={}) {
     .eyebrow{direction:ltr;text-align:left;color:var(--mint);font:700 13px/1.4 ui-monospace,monospace;letter-spacing:2px}
     h1{font-size:clamp(38px,7vw,72px);line-height:1.25;margin:8px 0 0;max-width:760px}
     .source{direction:ltr;text-align:left;color:var(--muted);font:600 13px/1.7 ui-monospace,monospace}
-    .system-status{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;margin-top:28px;background:var(--line);border:1px solid var(--line)}.system-status article{background:var(--panel);padding:17px}.system-status span{display:block;color:var(--muted);font-size:12px;margin-bottom:7px}.system-status strong{font-size:15px;line-height:1.7}.system-status article:last-child strong{font:600 12px/1.7 ui-monospace,monospace;overflow-wrap:anywhere}
+    .system-status{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;margin-top:28px;background:var(--line);border:1px solid var(--line)}.system-status article{background:var(--panel);padding:17px}.system-status span{display:block;color:var(--muted);font-size:12px;margin-bottom:7px}.system-status strong{font-size:15px;line-height:1.7}.system-status article:last-child strong{font:600 12px/1.7 ui-monospace,monospace;overflow-wrap:anywhere}
     .spine{display:grid;grid-template-columns:190px 1fr;margin-top:44px;min-height:460px}
     aside{border-left:1px solid var(--line);padding-left:28px;color:var(--muted)}
     aside strong{display:block;color:var(--ink);font-size:28px;margin-bottom:8px}.live{color:var(--mint);font:700 12px ui-monospace,monospace}
@@ -105,7 +108,7 @@ export function renderDashboard(state,release={}) {
 </head>
 <body><main>${releaseNotice}
   <header><div><div class="eyebrow">LOCAL OPERATIONAL MEMORY</div><h1>وضعیت واقعی پروژه‌های شما</h1></div><div class="source">VAULT → SYNC → DASHBOARD</div></header>
-  <section class="system-status"><article><span>ابزارهای متصل</span><strong>${connectionNames}</strong></article><article><span>پروژه‌ی مشترک</span><strong>${sharedProjectCount.toLocaleString("fa-IR")}</strong></article><article><span>آخرین همگام‌سازی</span><strong>${syncSummary}</strong></article></section>
+  <section class="system-status"><article><span>ابزارهای متصل</span><strong>${connectionNames}</strong></article><article><span>پروژه‌ی مشترک</span><strong>${sharedProjectCount.toLocaleString("fa-IR")}</strong></article><article><span>بسته‌ی انتقال‌پذیر</span><strong>${contextPacks.length.toLocaleString("fa-IR")}</strong></article><article><span>سلامت حافظه</span><strong>${memoryStatus}</strong></article><article><span>آخرین همگام‌سازی</span><strong>${syncSummary}</strong></article></section>
   <section class="spine"><aside><strong>${projects.length}</strong><span>پروژه در حافظه‌ی محلی</span><p class="live">● LOCAL DATA</p></aside><div class="content"><h2>پروژه‌ها</h2>${projectRows}</div></section>
   <section class="usage"><h2>مصرف ثبت‌شده بر اساس ابزار</h2><div class="usage-grid">${usageRows}</div></section>
   <section class="allocation"><h2>مصرف براساس پروژه</h2>${projectUsageRows}</section>

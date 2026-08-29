@@ -157,3 +157,9 @@ test("shows connected tools, shared projects, and the latest incremental sync",(
   assert.match(html,/آخرین همگام‌سازی/);
   assert.match(html,/site/);
 });
+
+test("shows portable context and memory review health",()=>{
+  const html=renderDashboard({projects:[],contextPacks:[{project:{id:"site"}}],memoryHealth:{status:"needs-review",needsReview:["q1"],missingContextPacks:[]}});
+  assert.match(html,/بسته‌ی انتقال‌پذیر/);
+  assert.match(html,/نیازمند بررسی/);
+});

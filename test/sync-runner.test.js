@@ -24,6 +24,9 @@ test("reports incremental project changes and records the dashboard sync state",
   const state=JSON.parse(await readFile(second.statePath,"utf8"));
   assert.equal(state.lastSync.status,"completed");
   assert.equal(state.lastSync.at,"2026-08-29T11:00:00.000Z");
+  assert.equal(state.lastSync.scanned,1);
+  assert.equal(state.lastSync.changed,1);
+  assert.equal(typeof state.syncLedger.projects.site,"string");
 });
 
 test("exposes the incremental sync command for recurring jobs",async()=>{

@@ -25,5 +25,6 @@ test("master prompts cover the complete connection and continuous-memory funnel"
     assert.match(prompt,/recurring sync|همگام‌سازی مداوم/i);
     assert.match(prompt,/new tool|ابزار جدید/i);
     assert.match(prompt,/dashboard/i);
+    assert.match(prompt,/context pack/i);
   }
 });

@@ -6,6 +6,7 @@ import { syncUsageSources } from "./usage-importers.js";
 import { calculateBudgetStatus, calculateCosts } from "./costs.js";
 import { generateRecommendations } from "./recommendations.js";
 import { buildAgentProfiles } from "./agent-registry.js";
+import { auditOperationalMemory, buildPortableContextPack } from "./operational-memory.js";
 
 function requireAbsolutePath(value, field) {
   if (!path.isAbsolute(value)) {
@@ -102,10 +103,23 @@ export async function syncPersonalData(configPath) {
     asOf: new Date().toISOString(),
   });
   const recommendations = generateRecommendations({ usageRecords: usage.records, costs });
+  const recordsPath=path.join(config.vaultPath,"02-Global-Knowledge","records.json");
+  const records=JSON.parse(await readFile(recordsPath,"utf8").catch((error)=>error?.code==="ENOENT"?"[]":Promise.reject(error)));
+  if(!Array.isArray(records))throw new Error("Knowledge records must be a JSON array");
+  const exportsPath=path.join(config.vaultPath,"09-Exports");
+  await mkdir(exportsPath,{recursive:true});
+  const contextPacks=[];
+  for(const project of projects){
+    const pack=buildPortableContextPack({project,records});
+    await writeFile(path.join(exportsPath,`${project.id}.context.md`),pack.markdown,{encoding:"utf8",mode:0o600});
+    await writeFile(path.join(exportsPath,`${project.id}.context.json`),`${JSON.stringify({...pack,markdown:undefined},null,2)}\n`,{encoding:"utf8",mode:0o600});
+    contextPacks.push(pack);
+  }
+  const memoryHealth=auditOperationalMemory({projects,records,packs:contextPacks});
   const statePath = path.join(path.dirname(configPath), "state.json");
-  await writeFile(statePath, `${JSON.stringify({ projects, canonicalProjects: config.canonicalProjects ?? [], connections: config.connections ?? [], syncMode: config.syncMode ?? "manual", agents, usage: usage.providers, usageByProject: usage.byProject, costs, budgetStatus, recommendations }, null, 2)}\n`, {encoding:"utf8",mode:0o600});
+  await writeFile(statePath, `${JSON.stringify({ projects, canonicalProjects: config.canonicalProjects ?? [], connections: config.connections ?? [], syncMode: config.syncMode ?? "manual", contextPacks:contextPacks.map((pack)=>({project:pack.project,generatedAt:pack.generatedAt})),memoryHealth,agents,usage: usage.providers, usageByProject: usage.byProject, costs, budgetStatus, recommendations }, null, 2)}\n`, {encoding:"utf8",mode:0o600});
   await chmod(statePath,0o600);
-  return { projects, canonicalProjects: config.canonicalProjects ?? [], connections: config.connections ?? [], syncMode: config.syncMode ?? "manual", agents, usage: usage.providers, usageByProject: usage.byProject, costs, budgetStatus, recommendations, statePath };
+  return { projects, canonicalProjects: config.canonicalProjects ?? [], connections: config.connections ?? [], syncMode: config.syncMode ?? "manual", contextPacks,memoryHealth,agents,usage: usage.providers, usageByProject: usage.byProject, costs, budgetStatus, recommendations, statePath };
 }
 
 const adapterFiles = {

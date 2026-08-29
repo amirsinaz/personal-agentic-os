@@ -169,3 +169,19 @@ test("creates approved canonical project indexes without copying raw conversatio
   assert.match(content,/shared: true/);
   assert.doesNotMatch(content,/\/private\/a|\/private\/b|transcript/i);
 });
+
+test("exports one redacted context pack per project and reports memory health",async()=>{
+  const root=await mkdtemp(path.join(os.tmpdir(),"agentic-os-packs-"));
+  const vaultPath=path.join(root,"Vault");
+  await mkdir(path.join(vaultPath,"01-Projects","site"),{recursive:true});
+  await mkdir(path.join(vaultPath,"02-Global-Knowledge"),{recursive:true});
+  await writeFile(path.join(vaultPath,"01-Projects","site","00-Index.md"),"---\nstatus: active\n---\n# Site\n");
+  await writeFile(path.join(vaultPath,"02-Global-Knowledge","records.json"),JSON.stringify([{id:"d1",type:"Decision",project:"site",content:"token=private-value",verified:true,source_session:"s1"}]));
+  const initialized=await initializePersonalWorkspace({appDataPath:path.join(root,"Data"),vaultPath,sources:{}});
+  const state=await syncPersonalData(initialized.configPath);
+  assert.equal(state.contextPacks.length,1);
+  assert.equal(state.memoryHealth.status,"healthy");
+  const pack=await readFile(path.join(vaultPath,"09-Exports","site.context.md"),"utf8");
+  assert.match(pack,/\[REDACTED\]/);
+  assert.doesNotMatch(pack,/private-value/);
+});

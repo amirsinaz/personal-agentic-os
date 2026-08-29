@@ -19,6 +19,9 @@ Read the [security policy and local-first trust boundaries](SECURITY.md) before 
 - An approval-gated canonical project map across selected AI tools
 - Incremental memory sync with created, updated, unchanged, and removed project states
 - Independent connection records and optional recurring sync templates for macOS, Linux, and Windows
+- Provenance-bearing knowledge records that keep assumptions separate from verified facts
+- Redacted Markdown and JSON context packs for moving approved project memory to another tool
+- Memory-health checks for missing context packs and records that still need review
 
 ## Recommended installation
 
@@ -58,6 +61,8 @@ npm run dashboard -- /absolute/path/to/config.json
 ```
 
 During setup, the wizard shows the proposed tool connections and canonical project map before it writes memory. Projects are merged only by exact path, repository identity, or strong content-marker evidence. Name similarity alone is never enough. With approval, an operating-system template from `ops` can run the same incremental sync command periodically and keep the dashboard state current.
+
+Each sync also rebuilds a redacted context pack for every discovered project in `09-Exports`. These packs contain only project-scoped records from `02-Global-Knowledge/records.json`, preserve verification and source-session fields, and never upgrade an assumption into a verified fact. The dashboard reports context-pack coverage and memory items that still need review.
 
 ## If Obsidian is not installed
 

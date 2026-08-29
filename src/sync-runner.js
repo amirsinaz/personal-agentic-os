@@ -1,11 +1,14 @@
 import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { createHash } from "node:crypto";
 
 import { syncPersonalData } from "./onboarding.js";
 
 function comparable(project) {
   return JSON.stringify({ id: project.id, name: project.name, status: project.status });
 }
+
+function fingerprint(project){return createHash("sha256").update(comparable(project)).digest("hex");}
 
 export async function runIncrementalSync(configPath, { now = new Date().toISOString() } = {}) {
   const statePath = path.join(path.dirname(configPath), "state.json");
@@ -24,7 +27,8 @@ export async function runIncrementalSync(configPath, { now = new Date().toISOStr
   }
   for (const id of before.keys()) if (!after.has(id)) changes.removed.push(id);
   const saved = JSON.parse(await readFile(current.statePath, "utf8"));
-  saved.lastSync = { at: now, status: "completed", changes };
+  saved.syncLedger={projects:Object.fromEntries([...after].map(([id,project])=>[id,fingerprint(project)]))};
+  saved.lastSync = { at: now, status: "completed", scanned:after.size, changed:changes.created.length+changes.updated.length+changes.removed.length, imported:changes.created.length+changes.updated.length, skipped:changes.unchanged.length, rejected:0, changes };
   await writeFile(current.statePath, `${JSON.stringify(saved, null, 2)}\n`, { encoding: "utf8", mode: 0o600 });
   return { ...current, changes, lastSync: saved.lastSync };
 }
