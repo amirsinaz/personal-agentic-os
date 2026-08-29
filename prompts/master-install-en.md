@@ -19,7 +19,7 @@ Install Personal Agentic OS locally from `https://github.com/amirsinaz/personal-
 
 ## Execution
 
-1. Detect the current tool, then ask which AI tools I use now and which ones I may add later. Register only tools I explicitly confirm.
+1. Detect the current tool, then ask which AI tools I use now and which ones I may add later. Register only tools I explicitly confirm. If a tool has no built-in adapter, suggest it only when it provides a valid connector manifest and supported transport; connector registration is not permission to install or enable it.
 2. If Obsidian is missing, briefly explain that it is the local memory layer and reference only `https://obsidian.md/download`. Ask before installation. Also explain Dashboard-only mode and its memory limitation.
 3. After approval, obtain the repository and inspect its README, skills guide, and privacy documentation. Stop if a required file is unavailable.
 4. Ask one item at a time: existing or new Vault, Vault path, each selected tool's local data source, approved project directories, Starter or Full install, optional financial inputs, telemetry consent, recurring sync, and weekly update checks.

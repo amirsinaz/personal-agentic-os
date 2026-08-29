@@ -10,6 +10,13 @@ test("registers only user-selected tools with independent local sources",()=>{
   ]);
 });
 
+test("registers a compatible future tool from a validated manifest",()=>{
+  const registry=buildConnectionRegistry({tools:["local-tool"],sources:{"local-tool":"/tmp/context"},manifests:[{schemaVersion:1,connectorKey:"local-tool",displayName:"Local Tool",transport:{kind:"file",directory:"/tmp/context"},capabilities:["context-bootstrap"]}]});
+  assert.equal(registry[0].id,"local-tool");
+  assert.equal(registry[0].status,"configured");
+  assert.equal(registry[0].connectorKind,"file");
+});
+
 test("groups the same project across tools by repository identity",()=>{
   const projects=identifyCanonicalProjects([
     {tool:"codex",path:"/work/product",name:"Product",repository:"git@example.com:team/product.git",markers:["roadmap","api"]},

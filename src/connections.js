@@ -1,12 +1,15 @@
 import path from "node:path";
+import { validateConnectorManifest } from "./connector-contract.js";
 
 const supportedTools = new Set(["codex", "claude", "gemini"]);
 
-export function buildConnectionRegistry({ tools = [], sources = {} }) {
-  return [...new Set(tools)].filter((tool) => supportedTools.has(tool)).sort().map((id) => ({
+export function buildConnectionRegistry({ tools = [], sources = {}, manifests=[] }) {
+  const manifestMap=new Map(manifests.map((item)=>{const manifest=validateConnectorManifest(item);return [manifest.connectorKey,manifest];}));
+  return [...new Set(tools)].filter((tool) => supportedTools.has(tool)||manifestMap.has(tool)).sort().map((id) => ({
     id,
     ...(sources[id] ? { source: sources[id], status: "configured" } : { status: "needs-source" }),
     sync: "manual",
+    ...(manifestMap.has(id)?{connectorKind:manifestMap.get(id).transport.kind,capabilities:manifestMap.get(id).capabilities}:{}),
   }));
 }
 
