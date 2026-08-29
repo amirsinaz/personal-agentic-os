@@ -14,8 +14,10 @@ export function createDashboardServer(configPath) {
     }
 
     try {
-      const state = await syncPersonalData(configPath);
       const release=JSON.parse(await readFile(path.join(path.dirname(configPath),"update-status.json"),"utf8").catch(()=>"{}"));
+      const state=release.requiredUpdate===true
+        ? JSON.parse(await readFile(path.join(path.dirname(configPath),"state.json"),"utf8").catch(()=>"{\"projects\":[]}"))
+        : await syncPersonalData(configPath);
       response.writeHead(200, {
         "content-type": "text/html; charset=utf-8",
         "cache-control": "no-store",

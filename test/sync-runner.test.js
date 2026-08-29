@@ -38,3 +38,10 @@ test("exposes the incremental sync command for recurring jobs",async()=>{
     assert.match(template,/sync-cli\.js|npm run sync/);
   }
 });
+
+test("blocks sync when the installed version is below a required minimum",async()=>{
+  const root=await mkdtemp(path.join(os.tmpdir(),"agentic-os-required-update-"));
+  const initialized=await initializePersonalWorkspace({appDataPath:path.join(root,"Data"),vaultPath:path.join(root,"Vault"),sources:{}});
+  await writeFile(path.join(root,"Data","update-status.json"),JSON.stringify({requiredUpdate:true,latestVersion:"0.7.1",releaseUrl:"https://example.test/v0.7.1"}));
+  await assert.rejects(runIncrementalSync(initialized.configPath),/required update/i);
+});

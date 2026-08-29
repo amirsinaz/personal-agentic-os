@@ -26,3 +26,23 @@ test("does not send version telemetry without consent",async()=>{
   await checkForUpdate({configPath,currentVersion:"0.3.0",platform:"linux",manifestUrl:"https://example.test/version.json",telemetryEndpoint:"https://example.test/api/version-check",fetchImpl:async(url,options)=>{calls.push({url,options});return {ok:true,json:async()=>({version:"0.3.0",releaseUrl:"https://example.test/releases/v0.3.0"})};}});
   assert.equal(calls.length,1);
 });
+
+test("marks versions below the supported minimum as a required update",async()=>{
+  const root=await mkdtemp(path.join(os.tmpdir(),"agentic-update-"));
+  const configPath=path.join(root,"config.json");
+  await writeFile(configPath,JSON.stringify({telemetry:{enabled:false},installType:"full"}));
+  const result=await checkForUpdate({configPath,currentVersion:"0.6.0",platform:"linux",manifestUrl:"https://example.test/version.json",telemetryEndpoint:"https://example.test/api/version-check",fetchImpl:async()=>({ok:true,json:async()=>({version:"0.7.1",minimumSupportedVersion:"0.7.0",updatePolicy:"required",severity:"critical",message:"Security repair",releaseUrl:"https://example.test/releases/v0.7.1"})})});
+  assert.equal(result.requiredUpdate,true);
+  assert.equal(result.minimumSupportedVersion,"0.7.0");
+  assert.equal(result.severity,"critical");
+  assert.equal(result.message,"Security repair");
+});
+
+test("does not require an update when the installed version is still supported",async()=>{
+  const root=await mkdtemp(path.join(os.tmpdir(),"agentic-update-"));
+  const configPath=path.join(root,"config.json");
+  await writeFile(configPath,JSON.stringify({telemetry:{enabled:false},installType:"full"}));
+  const result=await checkForUpdate({configPath,currentVersion:"0.7.0",platform:"linux",manifestUrl:"https://example.test/version.json",telemetryEndpoint:"https://example.test/api/version-check",fetchImpl:async()=>({ok:true,json:async()=>({version:"0.7.1",minimumSupportedVersion:"0.7.0",updatePolicy:"required",releaseUrl:"https://example.test/releases/v0.7.1"})})});
+  assert.equal(result.requiredUpdate,false);
+  assert.equal(result.updateAvailable,true);
+});

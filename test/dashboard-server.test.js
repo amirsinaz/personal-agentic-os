@@ -47,3 +47,14 @@ test("refreshes dashboard data from the configured vault on every request", asyn
   assert.equal(response.headers["x-frame-options"],"DENY");
   assert.match(response.headers["content-security-policy"],/frame-ancestors 'none'/);
 });
+
+test("shows the required-update screen without syncing local data",async(context)=>{
+  const root=await mkdtemp(path.join(os.tmpdir(),"agentic-os-dashboard-required-"));
+  const initialized=await initializePersonalWorkspace({appDataPath:path.join(root,"Data"),vaultPath:path.join(root,"Vault"),sources:{}});
+  await writeFile(path.join(root,"Data","update-status.json"),JSON.stringify({requiredUpdate:true,latestVersion:"0.7.1",message:"Critical repair",releaseUrl:"https://example.test/v0.7.1"}));
+  const server=createDashboardServer(initialized.configPath);
+  await new Promise(resolve=>server.listen(0,"127.0.0.1",resolve));context.after(()=>server.close());
+  const body=await fetchText(server.address().port);
+  assert.match(body,/به‌روزرسانی ضروری/);
+  assert.match(body,/Critical repair/);
+});

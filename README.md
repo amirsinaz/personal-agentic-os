@@ -83,6 +83,14 @@ Telemetry is disabled by default. If the user explicitly opts in, the successful
 
 Project names, file paths, Vault content, prompts, conversation text, token records, cost records, and credentials are never part of this payload.
 
+The install total therefore means **consented, successfully recorded installs**, not every copy or prompt-based setup. A user who declines telemetry, installs manually, or cannot reach the endpoint remains intentionally uncounted.
+
+## Controlled required updates
+
+The public release manifest can mark a minimum supported version. A version below that minimum shows a required-update screen and pauses incremental sync until the user installs the repaired release. This mechanism never edits the Vault or application files automatically. It is intended only for compatibility or security failures; normal releases remain recommended updates.
+
+Required-update enforcement is available to installations running version 0.7.0 or newer. Older copies that never run an updater cannot be remotely controlled.
+
 ## Preview, apply, and rollback
 
 ```bash

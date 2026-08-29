@@ -32,7 +32,7 @@ Install Personal Agentic OS locally from `https://github.com/amirsinaz/personal-
 11. Rebuild the dashboard from fresh state. Project count, connected tools, context packs, memory health, last-sync status, and usage data must come only from my data; missing evidence stays `Unavailable` and unverified records enter review.
 12. Only with explicit approval, enable recurring sync for the operating system. Sync must be incremental, propagate approved project changes to shared memory, and refresh the dashboard. It must not install software updates or change memory without a preview.
 13. Test the “add a new tool” path: confirm its access, compare its projects with the canonical map, provide only approved project context, and keep existing tools current with later changes to the same project.
-14. If Lean Context recommendations exist, show Preview first. Apply and Rollback require separate confirmation. Weekly version checks announce releases but never install them automatically.
+14. If Lean Context recommendations exist, show Preview first. Apply and Rollback require separate confirmation. Check releases when the dashboard starts and on the weekly schedule. Normal releases are announcements; when the manifest says the installed version is below the supported minimum, pause sync and show the repaired release, but never overwrite application files or the Vault automatically.
 
 ## Done
 

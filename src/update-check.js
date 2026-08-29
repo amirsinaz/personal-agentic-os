@@ -13,7 +13,9 @@ export async function checkForUpdate({configPath,currentVersion,platform,manifes
   const response=await fetchImpl(manifestUrl);
   if(!response.ok)throw new Error("Release manifest unavailable");
   const manifest=await response.json();
-  const result={checkedAt:new Date().toISOString(),currentVersion,latestVersion:manifest.version,releaseUrl:manifest.releaseUrl,updateAvailable:isNewerVersion(manifest.version,currentVersion)};
+  const minimumSupportedVersion=manifest.minimumSupportedVersion??manifest.version;
+  const requiredUpdate=manifest.updatePolicy==="required"&&isNewerVersion(minimumSupportedVersion,currentVersion);
+  const result={checkedAt:new Date().toISOString(),currentVersion,latestVersion:manifest.version,minimumSupportedVersion,releaseUrl:manifest.releaseUrl,updateAvailable:isNewerVersion(manifest.version,currentVersion),requiredUpdate,severity:manifest.severity??"normal",message:manifest.message??""};
   await writeFile(path.join(path.dirname(configPath),"update-status.json"),`${JSON.stringify(result,null,2)}\n`,{encoding:"utf8",mode:0o600});
   if(config.telemetry?.enabled===true){
     await fetchImpl(telemetryEndpoint,{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({installId:config.telemetry.installId,version:currentVersion,platform,installType:config.installType??"full"})}).catch(()=>null);

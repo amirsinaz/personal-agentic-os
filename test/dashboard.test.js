@@ -143,6 +143,13 @@ test("shows a safe release notice when a newer version is available",()=>{
   assert.match(html,/releases\/tag\/v0\.3\.0/);
 });
 
+test("shows a non-dismissible critical update notice for unsupported versions",()=>{
+  const html=renderDashboard({projects:[]},{currentVersion:"0.6.0",latestVersion:"0.7.1",requiredUpdate:true,message:"Security repair",releaseUrl:"https://example.test/v0.7.1"});
+  assert.match(html,/به‌روزرسانی ضروری/);
+  assert.match(html,/Security repair/);
+  assert.match(html,/ادامه پس از به‌روزرسانی/);
+});
+
 test("shows connected tools, shared projects, and the latest incremental sync",()=>{
   const html=renderDashboard({
     projects:[],

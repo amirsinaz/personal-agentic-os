@@ -12,6 +12,8 @@ function fingerprint(project){return createHash("sha256").update(comparable(proj
 
 export async function runIncrementalSync(configPath, { now = new Date().toISOString() } = {}) {
   const statePath = path.join(path.dirname(configPath), "state.json");
+  const updateStatus=JSON.parse(await readFile(path.join(path.dirname(configPath),"update-status.json"),"utf8").catch((error)=>error?.code==="ENOENT"?"{}":Promise.reject(error)));
+  if(updateStatus.requiredUpdate===true)throw new Error(`Required update: ${updateStatus.latestVersion??"new release"} ${updateStatus.releaseUrl??""}`.trim());
   const previous = JSON.parse(await readFile(statePath, "utf8").catch((error) => {
     if (error?.code === "ENOENT") return "{\"projects\":[]}";
     throw error;
