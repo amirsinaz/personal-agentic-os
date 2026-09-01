@@ -26,11 +26,13 @@ Read the [security policy and local-first trust boundaries](SECURITY.md) before 
 
 ## Recommended installation
 
-1. Open [`prompts/master-install-en.md`](prompts/master-install-en.md).
-2. Paste the prompt into Codex, Claude Code, or Gemini CLI.
-3. The agent inspects the environment first and asks before installations or system changes.
+1. Run `npx personal-agentic-os@latest` in a terminal.
+2. Review and approve the deterministic local setup plan.
+3. Use [`prompts/master-install-en.md`](prompts/master-install-en.md) in Codex, Claude Code, or Gemini CLI for semantic project discovery, deduplication, and memory migration.
 
 The [Persian master prompt](prompts/master-install.md) is also available.
+
+NPM handles repeatable file and adapter setup. The agent prompt is intentionally retained for tasks that require understanding project content and user approval; it is not used as a substitute for deterministic installation.
 
 ## Personal Agent Registry
 

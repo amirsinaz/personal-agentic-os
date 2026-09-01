@@ -57,3 +57,8 @@
 ## 0.1.0 — 2026-08-27
 
 - Published the initial local Obsidian memory, usage, cost, budget, recommendation, and reversible optimization workflow.
+# 0.8.0
+
+- Added a publishable `npx personal-agentic-os@latest` installer and command router.
+- Kept semantic project discovery and memory migration as a separate approval-gated agent step.
+- Added deterministic entry points for setup, dashboard, sync, update checks, and optimization.

@@ -1,9 +1,34 @@
 {
   "name": "personal-agentic-os",
-  "version": "0.7.0",
+  "version": "0.8.0",
+  "description": "Local-first shared project memory for Codex, Claude Code, and Gemini CLI",
   "license": "MIT",
-  "private": true,
+  "private": false,
   "type": "module",
+  "bin": {
+    "personal-agentic-os": "src/cli.js"
+  },
+  "files": [
+    "src",
+    "templates",
+    "prompts",
+    "ops",
+    "README.md",
+    "SECURITY.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/amirsinaz/personal-agentic-os.git"
+  },
+  "homepage": "https://myagenticstack.com",
+  "keywords": ["agentic","obsidian","codex","claude-code","gemini-cli","local-first"],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "dashboard": "node src/start-dashboard.js",
     "optimize": "node src/optimize-cli.js",
