@@ -1,7 +1,12 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { auditOperationalMemory, buildPortableContextPack, createKnowledgeRecord } from "../src/operational-memory.js";
+import { auditOperationalMemory, buildPortableContextPack, createKnowledgeRecord, redactOperationalContent } from "../src/operational-memory.js";
+
+test("removes private spans and credential-shaped values before memory is persisted",()=>{
+  assert.equal(redactOperationalContent("Keep <private>internal project note</private> visible api_key=abc123"),"Keep [REDACTED] visible api_key=[REDACTED]");
+  assert.equal(redactOperationalContent("Public <private>everything after this"),"Public [REDACTED]");
+});
 
 test("creates provenance-bearing records without upgrading assumptions to facts",()=>{
   const record=createKnowledgeRecord({id:"decision-1",type:"Decision",project:"site",content:"Use the approved layout",sourceSession:"session-1",sourcePath:"local/session-1",confidence:0.9,verified:true,updatedAt:"2026-08-29T12:00:00.000Z"});

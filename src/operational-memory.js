@@ -2,11 +2,15 @@ const allowedTypes=new Set(["Fact","Assumption","Decision","Rule","Goal","Open Q
 
 function clean(value){return String(value??"").replace(/[\r\n]+/g," ").trim();}
 
-function redact(value){
-  return clean(value)
+export function redactOperationalContent(value){
+  return clean(String(value??"")
+    .replace(/<private>[\s\S]*?<\/private>/gi,"[REDACTED]")
+    .replace(/<private>[\s\S]*$/gi,"[REDACTED]"))
     .replace(/\b(api[_-]?key|token|password|secret)\s*[:=]\s*\S+/gi,"$1=[REDACTED]")
     .replace(/\b(?:sk|ghp|github_pat)_[A-Za-z0-9_-]{8,}\b/g,"[REDACTED]");
 }
+
+const redact=redactOperationalContent;
 
 export function createKnowledgeRecord(input){
   if(!allowedTypes.has(input.type))throw new Error(`Unsupported knowledge type: ${input.type}`);
