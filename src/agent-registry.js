@@ -39,3 +39,12 @@ export function buildAgentProfiles(observations = []) {
     };
   }).sort((left, right) => left.project.localeCompare(right.project) || left.agentId.localeCompare(right.agentId));
 }
+
+export function queryAgentProfiles(profiles=[],{project,agentType,page=1,pageSize=5}={}){
+  if(!Number.isInteger(page)||page<1||!Number.isInteger(pageSize)||pageSize<1)throw new Error("Invalid pagination");
+  const filtered=profiles.filter((profile)=>(!project||profile.project===project)&&(!agentType||profile.agentType===agentType));
+  const totalItems=filtered.length;
+  const totalPages=Math.max(1,Math.ceil(totalItems/pageSize));
+  const start=(page-1)*pageSize;
+  return {items:filtered.slice(start,start+pageSize),page,pageSize,totalItems,totalPages};
+}

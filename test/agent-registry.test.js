@@ -1,7 +1,19 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { buildAgentProfiles } from "../src/agent-registry.js";
+import { buildAgentProfiles, queryAgentProfiles } from "../src/agent-registry.js";
+
+test("filters and paginates agent profiles without changing evidence",()=>{
+  const profiles=[
+    {agentId:"a",project:"alpha",agentType:"primary-agent"},
+    {agentId:"b",project:"alpha",agentType:"subagent"},
+    {agentId:"c",project:"alpha",agentType:"subagent"},
+    {agentId:"d",project:"beta",agentType:"subagent"},
+  ];
+  assert.deepEqual(queryAgentProfiles(profiles,{project:"alpha",agentType:"subagent",page:2,pageSize:1}),{
+    items:[profiles[2]],page:2,pageSize:1,totalItems:2,totalPages:2,
+  });
+});
 
 test("collapses explicit observations into one profile per agent and project",()=>{
   const profiles=buildAgentProfiles([
