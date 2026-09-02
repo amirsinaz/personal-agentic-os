@@ -6,9 +6,15 @@ import test from "node:test";
 
 import {
   applyOptimization,
+  evaluateOptimizationImpact,
   previewOptimization,
   rollbackOptimization,
 } from "../src/optimization-actions.js";
+
+test("waits for enough matching runs before reporting post-apply impact",()=>{
+  assert.deepEqual(evaluateOptimizationImpact({beforeRuns:[{tokens:100},{tokens:80}],afterRuns:[{tokens:60},{tokens:70}],minimumAfterRuns:5}),{status:"waiting",requiredRuns:5,observedRuns:2,measurement:"unavailable",causalSaving:"unavailable"});
+  assert.deepEqual(evaluateOptimizationImpact({beforeRuns:[{tokens:100},{tokens:80}],afterRuns:[{tokens:60},{tokens:70},{tokens:50},{tokens:60},{tokens:60}],minimumAfterRuns:5}),{status:"observed",requiredRuns:5,observedRuns:5,measurement:"actual",beforeAverage:90,afterAverage:60,changePercent:-33.33,causalSaving:"unavailable"});
+});
 
 test("previews the lean context policy without changing adapter files", async () => {
   const root = await mkdtemp(path.join(os.tmpdir(), "agentic-os-preview-"));

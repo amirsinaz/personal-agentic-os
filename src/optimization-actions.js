@@ -25,6 +25,15 @@ function requireConfirmation(confirmed) {
   if (confirmed !== true) throw new Error("Explicit confirmation is required");
 }
 
+export function evaluateOptimizationImpact({beforeRuns=[],afterRuns=[],minimumAfterRuns=5}){
+  const exact=(runs)=>runs.map((run)=>run.tokens).filter((tokens)=>Number.isInteger(tokens)&&tokens>=0);
+  const before=exact(beforeRuns);const after=exact(afterRuns);
+  if(after.length<minimumAfterRuns||!before.length){return {status:"waiting",requiredRuns:minimumAfterRuns,observedRuns:after.length,measurement:"unavailable",causalSaving:"unavailable"};}
+  const average=(values)=>values.reduce((sum,value)=>sum+value,0)/values.length;
+  const beforeAverage=average(before);const afterAverage=average(after);
+  return {status:"observed",requiredRuns:minimumAfterRuns,observedRuns:after.length,measurement:"actual",beforeAverage:Number(beforeAverage.toFixed(2)),afterAverage:Number(afterAverage.toFixed(2)),changePercent:beforeAverage===0?0:Number((((afterAverage-beforeAverage)/beforeAverage)*100).toFixed(2)),causalSaving:"unavailable"};
+}
+
 export async function previewOptimization({ projectPath, tools }) {
   if (!path.isAbsolute(projectPath)) throw new Error("projectPath must be an absolute path");
   const unsupported = tools.find((tool) => !(tool in adapterFiles));
