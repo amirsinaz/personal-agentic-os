@@ -23,6 +23,11 @@ Read the [security policy and local-first trust boundaries](SECURITY.md) before 
 - Redacted Markdown and JSON context packs for moving approved project memory to another tool
 - Memory-health checks for missing context packs and records that still need review
 - A vendor-neutral connector manifest for compatible future tools, with disabled-by-default least privilege
+- Private-span and credential-pattern filtering before operational memory is stored
+- Project/type filters and stable pagination for evidence-backed Agent profiles
+- Equal-period cost comparison that keeps causal savings explicitly unavailable
+- Post-Apply optimization evidence that waits for enough valid runs
+- Read-only Sync integrity reports for missing, changed, and removed project ledger entries
 
 ## Recommended installation
 

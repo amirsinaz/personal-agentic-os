@@ -2,6 +2,19 @@
 
 <!-- Public, user-facing changes only. Exclude review automation, release operations, private analytics, deployment work, and maintainer-only fixes. -->
 
+## 0.9.0 — 2026-09-02
+
+- محتوای علامت‌گذاری‌شده به‌عنوان خصوصی و الگوهای Credential پیش از ثبت در حافظه حذف می‌شوند.
+- رجیستری Agentها اکنون فیلتر پروژه و نوع Agent و صفحه‌بندی پایدار دارد.
+- هزینه‌ی دو بازه‌ی هم‌اندازه فقط با قیمت و مصرف تأییدشده مقایسه می‌شود و تغییر مشاهده‌شده به‌عنوان صرفه‌جویی قطعی معرفی نمی‌شود.
+- اثر بهینه‌سازی تا ثبت حداقل پنج اجرای معتبر «در دسترس نیست» می‌ماند و پس از آن نیز فقط تغییر مشاهده‌شده گزارش می‌شود.
+- گزارش یکپارچگی Sync پروژه‌های جدید، تغییرکرده و حذف‌شده را بدون بازنویسی خودکار داده‌ها مشخص می‌کند.
+
+## 0.8.0 — 2026-09-01
+
+- نصب عمومی با `npx personal-agentic-os@latest` و مسیرهای ثابت Setup، Dashboard، Sync، Update و Optimization اضافه شد.
+- شناسایی معنایی پروژه‌ها و انتقال حافظه در یک مرحله‌ی جدا و نیازمند تأیید باقی ماند.
+
 ## 0.7.0 — 2026-08-29
 
 - Release Manifest اکنون حداقل نسخهٔ پشتیبانی‌شده، شدت و سیاست به‌روزرسانی را مشخص می‌کند.
@@ -57,8 +70,3 @@
 ## 0.1.0 — 2026-08-27
 
 - Published the initial local Obsidian memory, usage, cost, budget, recommendation, and reversible optimization workflow.
-# 0.8.0
-
-- Added a publishable `npx personal-agentic-os@latest` installer and command router.
-- Kept semantic project discovery and memory migration as a separate approval-gated agent step.
-- Added deterministic entry points for setup, dashboard, sync, update checks, and optimization.
