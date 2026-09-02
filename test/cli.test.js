@@ -14,7 +14,7 @@ test("the public CLI exposes setup, dashboard, sync, and update commands",async(
 
 test("the public CLI reports the package version without starting setup",async()=>{
   const {stdout}=await execFileAsync(process.execPath,[new URL("../src/cli.js",import.meta.url).pathname,"--version"]);
-  assert.equal(stdout.trim(),"0.8.0");
+  assert.equal(stdout.trim(),"0.9.1");
 });
 
 test("the package is publishable through one npx binary and includes runtime assets",async()=>{

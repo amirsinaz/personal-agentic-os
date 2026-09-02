@@ -2,7 +2,7 @@
 
 <!-- Public, user-facing changes only. Exclude review automation, release operations, private analytics, deployment work, and maintainer-only fixes. -->
 
-## 0.9.0 — 2026-09-02
+## 0.9.1 — 2026-09-02
 
 - محتوای علامت‌گذاری‌شده به‌عنوان خصوصی و الگوهای Credential پیش از ثبت در حافظه حذف می‌شوند.
 - رجیستری Agentها اکنون فیلتر پروژه و نوع Agent و صفحه‌بندی پایدار دارد.
