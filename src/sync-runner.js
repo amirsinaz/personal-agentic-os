@@ -10,6 +10,14 @@ function comparable(project) {
 
 function fingerprint(project){return createHash("sha256").update(comparable(project)).digest("hex");}
 
+export function auditSyncIntegrity({projects=[],ledger={}}){
+  const current=Object.fromEntries(projects.map((project)=>[project.id,fingerprint(project)]));
+  const missing=Object.keys(current).filter((id)=>!(id in ledger)).sort();
+  const changed=Object.keys(current).filter((id)=>id in ledger&&ledger[id]!==current[id]).sort();
+  const removed=Object.keys(ledger).filter((id)=>!(id in current)).sort();
+  return {status:missing.length||changed.length||removed.length?"needs-review":"healthy",missing,changed,removed,current};
+}
+
 export async function runIncrementalSync(configPath, { now = new Date().toISOString() } = {}) {
   const statePath = path.join(path.dirname(configPath), "state.json");
   const updateStatus=JSON.parse(await readFile(path.join(path.dirname(configPath),"update-status.json"),"utf8").catch((error)=>error?.code==="ENOENT"?"{}":Promise.reject(error)));

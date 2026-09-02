@@ -5,7 +5,14 @@ import path from "node:path";
 import test from "node:test";
 
 import { initializePersonalWorkspace } from "../src/onboarding.js";
-import { runIncrementalSync } from "../src/sync-runner.js";
+import { auditSyncIntegrity, runIncrementalSync } from "../src/sync-runner.js";
+
+test("reports missing and changed project ledger entries without rewriting them",()=>{
+  const projects=[{id:"site",name:"Site",status:"active"},{id:"app",name:"App",status:"paused"}];
+  const baseline=auditSyncIntegrity({projects,ledger:{}});
+  const report=auditSyncIntegrity({projects,ledger:{site:baseline.current.site,stale:"old"}});
+  assert.deepEqual(report,{status:"needs-review",missing:["app"],changed:[],removed:["stale"],current:baseline.current});
+});
 
 test("reports incremental project changes and records the dashboard sync state",async()=>{
   const root=await mkdtemp(path.join(os.tmpdir(),"agentic-os-sync-"));
