@@ -1,7 +1,14 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { calculateBudgetStatus, calculateCosts } from "../src/costs.js";
+import { calculateBudgetStatus, calculateCosts, compareCostPeriods } from "../src/costs.js";
+
+test("compares confirmed equal-period cost without claiming causal saving",()=>{
+  const priceBook=[{provider:"codex",model:"model-a",effectiveFrom:"2026-01-01T00:00:00Z",inputPerMillion:10,cachedInputPerMillion:0,outputPerMillion:0,currency:"USD",source:"user-confirmed"}];
+  const current=[{provider:"codex",model:"model-a",timestamp:"2026-02-10T00:00:00Z",inputTokens:500_000,outputTokens:0,measurement:"actual"}];
+  const previous=[{provider:"codex",model:"model-a",timestamp:"2026-02-01T00:00:00Z",inputTokens:1_000_000,outputTokens:0,measurement:"actual"}];
+  assert.deepEqual(compareCostPeriods({current,previous,priceBook}),{measurement:"actual",currency:"USD",current:5,previous:10,change:-5,changePercent:-50,causalSaving:"unavailable"});
+});
 
 test("calculates metered API cost from a confirmed effective price", () => {
   const result = calculateCosts({

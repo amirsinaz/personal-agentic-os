@@ -71,6 +71,16 @@ export function calculateCosts({ usageRecords, priceBook, subscriptions }) {
   };
 }
 
+export function compareCostPeriods({current=[],previous=[],priceBook=[]}){
+  const currentCost=calculateMetered(current,priceBook);
+  const previousCost=calculateMetered(previous,priceBook);
+  if(currentCost.measurement!=="actual"||previousCost.measurement!=="actual"||currentCost.currency!==previousCost.currency||previousCost.total===0){
+    return {measurement:"unavailable",causalSaving:"unavailable"};
+  }
+  const change=Number((currentCost.total-previousCost.total).toFixed(8));
+  return {measurement:"actual",currency:currentCost.currency,current:currentCost.total,previous:previousCost.total,change,changePercent:Number(((change/previousCost.total)*100).toFixed(2)),causalSaving:"unavailable"};
+}
+
 function unavailableBudget(budget) {
   return {
     scope: budget?.scope ?? "all",
