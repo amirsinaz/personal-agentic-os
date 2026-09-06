@@ -2,6 +2,12 @@
 
 <!-- Public, user-facing changes only. Exclude review automation, release operations, private analytics, deployment work, and maintainer-only fixes. -->
 
+## 0.10.0 — 2026-09-06
+
+- دستور `verify` وضعیت واقعی Context Packها، سلامت حافظه و آخرین Sync را بدون تغییر داده‌ها گزارش می‌کند.
+- دستور `context` فقط میان Context Packهای محلی جست‌وجو می‌کند و نتیجه را همراه مسیر منبع برمی‌گرداند.
+- نبودن شواهد، Sync اجرا‌نشده و رکوردهای تأییدنشده با وضعیت «نیازمند بررسی» مشخص می‌شوند؛ نتیجه‌ی موفق ساختگی تولید نمی‌شود.
+
 ## 0.9.1 — 2026-09-02
 
 - محتوای علامت‌گذاری‌شده به‌عنوان خصوصی و الگوهای Credential پیش از ثبت در حافظه حذف می‌شوند.

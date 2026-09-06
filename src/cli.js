@@ -10,6 +10,8 @@ Usage:
   npx personal-agentic-os@latest sync /absolute/path/to/config.json
   npx personal-agentic-os@latest update /absolute/path/to/config.json
   npx personal-agentic-os@latest optimize <preview|apply|rollback> ...
+  npx personal-agentic-os@latest verify /absolute/path/to/config.json
+  npx personal-agentic-os@latest context /absolute/path/to/config.json <query>
 
 Commands:
   setup       Check prerequisites and start the approval-gated setup wizard
@@ -17,13 +19,15 @@ Commands:
   sync        Update approved local memory and project state
   update      Check for a newer or required release
   optimize    Preview, apply, or roll back context optimizations
+  verify      Check local memory and sync evidence without changing data
+  context     Search generated local context packs and return source paths
 `;
 
 const [command="setup",...args]=process.argv.slice(2);
 if(["--help","-h","help"].includes(command)){process.stdout.write(help);process.exit(0);}
 if(["--version","-v"].includes(command)){process.stdout.write(`${CURRENT_VERSION}\n`);process.exit(0);}
 
-const modules={setup:"./setup-cli.js",dashboard:"./start-dashboard.js",sync:"./sync-cli.js",update:"./check-update-cli.js",optimize:"./optimize-cli.js"};
+const modules={setup:"./setup-cli.js",dashboard:"./start-dashboard.js",sync:"./sync-cli.js",update:"./check-update-cli.js",optimize:"./optimize-cli.js",verify:"./verify-cli.js",context:"./context-cli.js"};
 const modulePath=modules[command];
 if(!modulePath){process.stderr.write(`Unknown command: ${command}\n\n${help}`);process.exit(1);}
 

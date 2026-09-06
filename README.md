@@ -68,6 +68,18 @@ npm run sync -- /absolute/path/to/config.json
 npm run dashboard -- /absolute/path/to/config.json
 ```
 
+Verify local memory and Sync evidence without changing any project data:
+
+```bash
+npx personal-agentic-os@latest verify /absolute/path/to/config.json
+```
+
+Search generated local Context Packs and receive source-bearing matches:
+
+```bash
+npx personal-agentic-os@latest context /absolute/path/to/config.json "current authentication decision"
+```
+
 During setup, the wizard shows the proposed tool connections and canonical project map before it writes memory. Projects are merged only by exact path, repository identity, or strong content-marker evidence. Name similarity alone is never enough. With approval, an operating-system template from `ops` can run the same incremental sync command periodically and keep the dashboard state current.
 
 Each sync also rebuilds a redacted context pack for every discovered project in `09-Exports`. These packs contain only project-scoped records from `02-Global-Knowledge/records.json`, preserve verification and source-session fields, and never upgrade an assumption into a verified fact. The dashboard reports context-pack coverage and memory items that still need review.
