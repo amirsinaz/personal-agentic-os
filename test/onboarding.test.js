@@ -141,6 +141,7 @@ test("creates an empty starter vault without project data", async () => {
     "Templates",
   ]);
   assert.deepEqual(JSON.parse(await readFile(path.join(vaultPath,"04-Agents","observations.json"),"utf8")),[]);
+  assert.deepEqual(JSON.parse(await readFile(path.join(vaultPath,"00-System","clarifications.json"),"utf8")),{schemaVersion:1,questions:[],snapshot:{projects:{},agents:{}}});
   const template = await readFile(path.join(vaultPath, "Templates", "Project.md"), "utf8");
   assert.match(template, /status: active/);
   assert.match(template, /## اقدام بعدی/);
@@ -180,8 +181,22 @@ test("exports one redacted context pack per project and reports memory health",a
   const initialized=await initializePersonalWorkspace({appDataPath:path.join(root,"Data"),vaultPath,sources:{}});
   const state=await syncPersonalData(initialized.configPath);
   assert.equal(state.contextPacks.length,1);
-  assert.equal(state.memoryHealth.status,"healthy");
+  assert.equal(state.memoryHealth.status,"needs-review");
+  assert.ok(state.memoryHealth.pendingClarifications.length>0);
   const pack=await readFile(path.join(vaultPath,"09-Exports","site.context.md"),"utf8");
   assert.match(pack,/\[REDACTED\]/);
   assert.doesNotMatch(pack,/private-value/);
+});
+
+test("persists historical clarification questions and a memory snapshot during sync",async()=>{
+  const root=await mkdtemp(path.join(os.tmpdir(),"agentic-os-clarifications-"));
+  const vaultPath=path.join(root,"Vault");
+  await mkdir(path.join(vaultPath,"01-Projects","site"),{recursive:true});
+  await writeFile(path.join(vaultPath,"01-Projects","site","00-Index.md"),"---\nstatus: active\n---\n# Site\n");
+  const initialized=await initializePersonalWorkspace({appDataPath:path.join(root,"Data"),vaultPath,sources:{}});
+  const state=await syncPersonalData(initialized.configPath);
+  assert.ok(state.clarifications.some((item)=>item.id==="missing:project:site:goal"&&item.status==="pending"));
+  const persisted=JSON.parse(await readFile(path.join(vaultPath,"00-System","clarifications.json"),"utf8"));
+  assert.equal(persisted.questions.length,state.clarifications.length);
+  assert.equal(persisted.snapshot.projects.site.status,"active");
 });

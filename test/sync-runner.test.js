@@ -46,6 +46,16 @@ test("exposes the incremental sync command for recurring jobs",async()=>{
   }
 });
 
+test("recurring sync extracts only changed configured conversations",async()=>{
+  const root=await mkdtemp(path.join(os.tmpdir(),"agentic-os-auto-memory-"));const vaultPath=path.join(root,"Vault");
+  await mkdir(path.join(vaultPath,"01-Projects","site"),{recursive:true});await writeFile(path.join(vaultPath,"01-Projects","site","00-Index.md"),"---\nstatus: active\n---\n# Site\n");
+  const sourcePath=path.join(root,"conversations.json");await writeFile(sourcePath,JSON.stringify([{id:"chat-1",title:"Decision",mapping:{a:{message:{author:{role:"user"},content:{parts:["Use SQLite"]}}}}}]));
+  const initialized=await initializePersonalWorkspace({appDataPath:path.join(root,"Data"),vaultPath,sources:{},memoryExtraction:{enabled:true,conversationSources:[sourcePath]}});
+  let calls=0;const extract=async()=>{calls++;return {candidates:[{id:"decision-1",type:"Decision",project:"site",content:"Use SQLite",confidence:.8,sourceConversation:"chat-1"}]};};
+  await runIncrementalSync(initialized.configPath,{extract});await runIncrementalSync(initialized.configPath,{extract});
+  assert.equal(calls,1);
+});
+
 test("blocks sync when the installed version is below a required minimum",async()=>{
   const root=await mkdtemp(path.join(os.tmpdir(),"agentic-os-required-update-"));
   const initialized=await initializePersonalWorkspace({appDataPath:path.join(root,"Data"),vaultPath:path.join(root,"Vault"),sources:{}});

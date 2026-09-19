@@ -3,6 +3,11 @@ import test from "node:test";
 
 import { buildAgentProfiles, queryAgentProfiles } from "../src/agent-registry.js";
 
+test("retains explicit parent-agent evidence for subagents",()=>{
+  const [profile]=buildAgentProfiles([{agentId:"subagent:research",agentType:"subagent",project:"site",observedAt:"2026-09-08T10:00:00Z",sourceSession:"s1",sourcePath:"session.json",evidence:{parentAgent:"product-lead",responsibility:"Research competitors"}}]);
+  assert.equal(profile.parentAgent,"product-lead");
+});
+
 test("filters and paginates agent profiles without changing evidence",()=>{
   const profiles=[
     {agentId:"a",project:"alpha",agentType:"primary-agent"},
@@ -20,7 +25,7 @@ test("collapses explicit observations into one profile per agent and project",()
     {agentId:"codex",agentType:"primary-agent",project:"launch",observedAt:"2026-08-20T10:00:00Z",sourceSession:"s1",sourcePath:"logs/one",evidence:{name:"Codex",responsibility:"unknown",tool:"unknown",skills:[]}},
     {agentId:"codex",agentType:"primary-agent",project:"launch",observedAt:"2026-08-24T10:00:00Z",sourceSession:"s2",sourcePath:"logs/two",evidence:{name:"Codex",responsibility:"MVP implementation",tool:"Codex desktop",skills:["test-driven-development"]}},
   ]);
-  assert.deepEqual(profiles,[{agentId:"codex",name:"Codex",agentType:"primary-agent",project:"launch",responsibility:"MVP implementation",tools:["Codex desktop"],skills:["test-driven-development"],observationCount:2,firstSeen:"2026-08-20T10:00:00Z",lastActivity:"2026-08-24T10:00:00Z",latestSourceSession:"s2",latestSourcePath:"logs/two",status:"observed"}]);
+  assert.deepEqual(profiles,[{agentId:"codex",name:"Codex",agentType:"primary-agent",project:"launch",responsibility:"MVP implementation",parentAgent:"unknown",tools:["Codex desktop"],skills:["test-driven-development"],observationCount:2,firstSeen:"2026-08-20T10:00:00Z",lastActivity:"2026-08-24T10:00:00Z",latestSourceSession:"s2",latestSourcePath:"logs/two",status:"observed"}]);
 });
 
 test("keeps unknown evidence honest and separates the same agent by project",()=>{

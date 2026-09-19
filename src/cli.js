@@ -12,6 +12,7 @@ Usage:
   npx personal-agentic-os@latest optimize <preview|apply|rollback> ...
   npx personal-agentic-os@latest verify /absolute/path/to/config.json
   npx personal-agentic-os@latest context /absolute/path/to/config.json <query>
+  npx personal-agentic-os@latest memory-import /absolute/path/to/config.json /absolute/path/to/conversations.json
 
 Commands:
   setup       Check prerequisites and start the approval-gated setup wizard
@@ -21,13 +22,14 @@ Commands:
   optimize    Preview, apply, or roll back context optimizations
   verify      Check local memory and sync evidence without changing data
   context     Search generated local context packs and return source paths
+  memory-import  Extract reviewable operational memory from a ChatGPT export using local Codex
 `;
 
 const [command="setup",...args]=process.argv.slice(2);
 if(["--help","-h","help"].includes(command)){process.stdout.write(help);process.exit(0);}
 if(["--version","-v"].includes(command)){process.stdout.write(`${CURRENT_VERSION}\n`);process.exit(0);}
 
-const modules={setup:"./setup-cli.js",dashboard:"./start-dashboard.js",sync:"./sync-cli.js",update:"./check-update-cli.js",optimize:"./optimize-cli.js",verify:"./verify-cli.js",context:"./context-cli.js"};
+const modules={setup:"./setup-cli.js",dashboard:"./start-dashboard.js",sync:"./sync-cli.js",update:"./check-update-cli.js",optimize:"./optimize-cli.js",verify:"./verify-cli.js",context:"./context-cli.js","memory-import":"./conversation-import-cli.js"};
 const modulePath=modules[command];
 if(!modulePath){process.stderr.write(`Unknown command: ${command}\n\n${help}`);process.exit(1);}
 

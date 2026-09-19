@@ -7,6 +7,7 @@ import { calculateBudgetStatus, calculateCosts } from "./costs.js";
 import { generateRecommendations } from "./recommendations.js";
 import { buildAgentProfiles } from "./agent-registry.js";
 import { auditOperationalMemory, buildPortableContextPack } from "./operational-memory.js";
+import { applyClarificationAnswer, buildClarificationQueue, buildMemorySnapshot } from "./memory-intelligence.js";
 
 function requireAbsolutePath(value, field) {
   if (!path.isAbsolute(value)) {
@@ -27,6 +28,7 @@ export async function initializePersonalWorkspace({
   syncMode = "manual",
   telemetryConsent = false,
   installType = "full",
+  memoryExtraction = { enabled: false, conversationSources: [] },
 }) {
   requireAbsolutePath(appDataPath, "appDataPath");
   requireAbsolutePath(vaultPath, "vaultPath");
@@ -36,6 +38,7 @@ export async function initializePersonalWorkspace({
   for (const [name, projectPath] of Object.entries(projectRoots)) {
     requireAbsolutePath(projectPath, `projectRoots.${name}`);
   }
+  for(const [index,sourcePath] of (memoryExtraction.conversationSources??[]).entries())requireAbsolutePath(sourcePath,`memoryExtraction.conversationSources.${index}`);
 
   const config = {
     vaultPath,
@@ -48,6 +51,7 @@ export async function initializePersonalWorkspace({
     canonicalProjects,
     syncMode,
     installType,
+    memoryExtraction:{enabled:Boolean(memoryExtraction.enabled),conversationSources:[...new Set(memoryExtraction.conversationSources??[])]},
     telemetry: telemetryConsent
       ? { enabled: true, installId: randomUUID() }
       : { enabled: false },
@@ -106,6 +110,12 @@ export async function syncPersonalData(configPath) {
   const recordsPath=path.join(config.vaultPath,"02-Global-Knowledge","records.json");
   const records=JSON.parse(await readFile(recordsPath,"utf8").catch((error)=>error?.code==="ENOENT"?"[]":Promise.reject(error)));
   if(!Array.isArray(records))throw new Error("Knowledge records must be a JSON array");
+  const clarificationsPath=path.join(config.vaultPath,"00-System","clarifications.json");
+  const clarificationStore=JSON.parse(await readFile(clarificationsPath,"utf8").catch((error)=>error?.code==="ENOENT"?"{}":Promise.reject(error)));
+  const clarifications=buildClarificationQueue({projects,agents,records,existingQuestions:clarificationStore.questions??[],previousSnapshot:clarificationStore.snapshot});
+  const memorySnapshot=buildMemorySnapshot({projects,agents});
+  await mkdir(path.dirname(clarificationsPath),{recursive:true});
+  await writeFile(clarificationsPath,`${JSON.stringify({schemaVersion:1,questions:clarifications,snapshot:memorySnapshot},null,2)}\n`,{encoding:"utf8",mode:0o600});
   const exportsPath=path.join(config.vaultPath,"09-Exports");
   await mkdir(exportsPath,{recursive:true});
   const contextPacks=[];
@@ -115,11 +125,28 @@ export async function syncPersonalData(configPath) {
     await writeFile(path.join(exportsPath,`${project.id}.context.json`),`${JSON.stringify({...pack,markdown:undefined},null,2)}\n`,{encoding:"utf8",mode:0o600});
     contextPacks.push(pack);
   }
-  const memoryHealth=auditOperationalMemory({projects,records,packs:contextPacks});
+  const memoryHealth=auditOperationalMemory({projects,records,packs:contextPacks,questions:clarifications});
   const statePath = path.join(path.dirname(configPath), "state.json");
-  await writeFile(statePath, `${JSON.stringify({ projects, canonicalProjects: config.canonicalProjects ?? [], connections: config.connections ?? [], syncMode: config.syncMode ?? "manual", contextPacks:contextPacks.map((pack)=>({project:pack.project,generatedAt:pack.generatedAt})),memoryHealth,agents,usage: usage.providers, usageByProject: usage.byProject, costs, budgetStatus, recommendations }, null, 2)}\n`, {encoding:"utf8",mode:0o600});
+  const memoryExtraction=config.memoryExtraction??{enabled:false,conversationSources:[]};
+  await writeFile(statePath, `${JSON.stringify({ projects, canonicalProjects: config.canonicalProjects ?? [], connections: config.connections ?? [], syncMode: config.syncMode ?? "manual", memoryExtraction, contextPacks:contextPacks.map((pack)=>({project:pack.project,generatedAt:pack.generatedAt})),memoryHealth,clarifications,agents,usage: usage.providers, usageByProject: usage.byProject, costs, budgetStatus, recommendations }, null, 2)}\n`, {encoding:"utf8",mode:0o600});
   await chmod(statePath,0o600);
-  return { projects, canonicalProjects: config.canonicalProjects ?? [], connections: config.connections ?? [], syncMode: config.syncMode ?? "manual", contextPacks,memoryHealth,agents,usage: usage.providers, usageByProject: usage.byProject, costs, budgetStatus, recommendations, statePath };
+  return { projects, canonicalProjects: config.canonicalProjects ?? [], connections: config.connections ?? [], syncMode: config.syncMode ?? "manual", memoryExtraction,contextPacks,memoryHealth,clarifications,agents,usage: usage.providers, usageByProject: usage.byProject, costs, budgetStatus, recommendations, statePath };
+}
+
+export async function answerClarification(configPath,{questionId,answer,answeredAt=new Date().toISOString()}){
+  const config=JSON.parse(await readFile(configPath,"utf8"));
+  const clarificationsPath=path.join(config.vaultPath,"00-System","clarifications.json");
+  const recordsPath=path.join(config.vaultPath,"02-Global-Knowledge","records.json");
+  const store=JSON.parse(await readFile(clarificationsPath,"utf8"));
+  const question=(store.questions??[]).find((item)=>item.id===questionId&&item.status==="pending");
+  if(!question)throw new Error("Pending clarification question not found");
+  const records=JSON.parse(await readFile(recordsPath,"utf8").catch((error)=>error?.code==="ENOENT"?"[]":Promise.reject(error)));
+  const applied=applyClarificationAnswer({question,answer,records,answeredAt});
+  const questions=(store.questions??[]).map((item)=>item.id===questionId?applied.question:item);
+  await mkdir(path.dirname(recordsPath),{recursive:true});
+  await writeFile(recordsPath,`${JSON.stringify(applied.records,null,2)}\n`,{encoding:"utf8",mode:0o600});
+  await writeFile(clarificationsPath,`${JSON.stringify({...store,questions},null,2)}\n`,{encoding:"utf8",mode:0o600});
+  return syncPersonalData(configPath);
 }
 
 const adapterFiles = {
@@ -195,6 +222,13 @@ export async function createStarterVault(vaultPath) {
     await writeFile(observationsPath, "[]\n", { encoding: "utf8", flag: "wx" });
   } catch (error) {
     if (error?.code !== "EEXIST") throw error;
+  }
+
+  const clarificationsPath=path.join(vaultPath,"00-System","clarifications.json");
+  try{
+    await writeFile(clarificationsPath,`${JSON.stringify({schemaVersion:1,questions:[],snapshot:{projects:{},agents:{}}},null,2)}\n`,{encoding:"utf8",flag:"wx",mode:0o600});
+  }catch(error){
+    if(error?.code!=="EEXIST")throw error;
   }
 
   const skipped = [];

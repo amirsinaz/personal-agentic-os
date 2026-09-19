@@ -8,6 +8,7 @@ Personal Agentic OS is designed for local, single-user operation. The installer 
 - Optional install telemetry is off by default. When explicitly enabled, its payload is limited to a random installation ID, application version, operating system, and install type.
 - The public resource website records aggregate interaction counters without cookies or persistent user identifiers.
 - LLM providers may receive content that the user sends through their own Codex, Claude Code, or Gemini CLI configuration. This repository cannot override provider-side privacy terms.
+- Conversation import is opt-in. When enabled, selected conversation batches and canonical project names are sent through the user's authenticated Codex service for extraction. Raw exports stay in the user's local application-data directory and are never bundled with releases or telemetry.
 
 ## Safe installation
 

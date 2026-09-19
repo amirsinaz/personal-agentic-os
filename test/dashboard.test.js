@@ -170,3 +170,19 @@ test("shows portable context and memory review health",()=>{
   assert.match(html,/بسته‌ی انتقال‌پذیر/);
   assert.match(html,/نیازمند بررسی/);
 });
+
+test("shows pending clarification questions with an answer form",()=>{
+  const html=renderDashboard({projects:[],clarifications:[{id:"missing:project:site:goal",project:"site",scopeType:"project",scopeId:"site",field:"goal",reason:"missing",prompt:"What is the current goal of Site?",status:"pending"}]});
+  assert.match(html,/Memory questions/);
+  assert.match(html,/What is the current goal of Site\?/);
+  assert.match(html,/action="\/clarifications"/);
+  assert.match(html,/name="answer"/);
+});
+
+test("shows a no-terminal Memory Sources setup form",()=>{
+  const html=renderDashboard({projects:[],memoryExtraction:{enabled:false,conversationSources:[],lastImport:null}});
+  assert.match(html,/Memory Sources/);
+  assert.match(html,/type="file"/);
+  assert.match(html,/Continuous memory extraction/);
+  assert.match(html,/action="\/memory-sources"/);
+});

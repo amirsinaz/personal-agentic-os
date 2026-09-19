@@ -11,12 +11,12 @@ const execFileAsync=promisify(execFile);
 test("the public CLI exposes setup, dashboard, sync, and update commands",async()=>{
   const {stdout}=await execFileAsync(process.execPath,[new URL("../src/cli.js",import.meta.url).pathname,"--help"]);
   assert.match(stdout,/npx personal-agentic-os@latest/);
-  for(const command of ["setup","dashboard","sync","update"])assert.match(stdout,new RegExp(`\\b${command}\\b`));
+  for(const command of ["setup","dashboard","sync","update","memory-import"])assert.match(stdout,new RegExp(`\\b${command}\\b`));
 });
 
 test("the public CLI reports the package version without starting setup",async()=>{
   const {stdout}=await execFileAsync(process.execPath,[new URL("../src/cli.js",import.meta.url).pathname,"--version"]);
-  assert.equal(stdout.trim(),"0.10.0");
+  assert.equal(stdout.trim(),"0.11.0");
 });
 
 test("the package is publishable through one npx binary and includes runtime assets",async()=>{

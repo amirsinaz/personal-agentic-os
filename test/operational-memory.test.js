@@ -26,8 +26,18 @@ test("builds a redacted portable context pack for one canonical project",()=>{
   assert.equal(pack.project.id,"site");
   assert.equal(pack.records.length,2);
   assert.match(pack.markdown,/Keep the compact cards/);
+  assert.match(pack.markdown,/## Operational overview/);
+  assert.match(pack.markdown,/## Decisions/);
+  assert.match(pack.markdown,/Status: active/);
+  assert.match(pack.markdown,/Source: s1/);
   assert.doesNotMatch(pack.markdown,/secret-value/);
   assert.match(pack.markdown,/\[REDACTED\]/);
+});
+
+test("includes pending clarification questions in memory health",()=>{
+  const report=auditOperationalMemory({projects:[{id:"site"}],records:[],packs:[{project:{id:"site"}}],questions:[{id:"q1",status:"pending"}]});
+  assert.equal(report.status,"needs-review");
+  assert.deepEqual(report.pendingClarifications,["q1"]);
 });
 
 test("reports missing packs and unverified records without changing them",()=>{

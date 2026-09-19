@@ -28,6 +28,7 @@ export function buildAgentProfiles(observations = []) {
       agentType: latest.agentType,
       project: latest.project,
       responsibility: evidence.map((item) => known(item.responsibility)).find(Boolean) ?? "unknown",
+      parentAgent: evidence.map((item) => known(item.parentAgent)).find(Boolean) ?? "unknown",
       tools,
       skills,
       observationCount: items.length,

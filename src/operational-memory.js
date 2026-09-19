@@ -1,4 +1,4 @@
-const allowedTypes=new Set(["Fact","Assumption","Decision","Rule","Goal","Open Question","Entity","Activity","Agent","Subagent","Routine","Tool","Skill"]);
+const allowedTypes=new Set(["Fact","Assumption","Decision","Rule","Goal","Open Question","Entity","Activity","Current State","Workflow","Risk","Task","Agent","Subagent","Routine","Tool","Skill"]);
 
 function clean(value){return String(value??"").replace(/[\r\n]+/g," ").trim();}
 
@@ -24,16 +24,25 @@ export function createKnowledgeRecord(input){
 }
 
 export function buildPortableContextPack({project,records=[],generatedAt=new Date().toISOString()}){
-  const selected=records.filter((record)=>record.project===project.id).map((record)=>({...record,content:redact(record.content)}));
-  const lines=[`# ${clean(project.name||project.id)}`,"",`Generated: ${generatedAt}`,"",...selected.flatMap((record)=>[
-    `## ${record.type}: ${record.id}`,"",record.content||"Unavailable","",`Verified: ${Boolean(record.verified)}`,`Source session: ${record.source_session||"Unavailable"}`,"",
-  ])];
+  const typeOrder=["Goal","Current State","Decision","Rule","Workflow","Routine","Task","Risk","Open Question","Agent","Subagent","Tool","Skill","Fact","Assumption","Entity","Activity"];
+  const labels={Goal:"Goals","Current State":"Current state",Decision:"Decisions",Rule:"Rules",Workflow:"Workflows",Routine:"Routines",Task:"Tasks",Risk:"Risks","Open Question":"Open questions",Agent:"Agents",Subagent:"Subagents",Tool:"Tools",Skill:"Skills",Fact:"Facts",Assumption:"Assumptions",Entity:"Entities",Activity:"Activity"};
+  const selected=records.filter((record)=>record.project===project.id).map((record)=>({...record,content:redact(record.content)})).sort((left,right)=>typeOrder.indexOf(left.type)-typeOrder.indexOf(right.type)||String(left.id).localeCompare(String(right.id)));
+  const sections=[];
+  for(const type of typeOrder){
+    const items=selected.filter((record)=>record.type===type);
+    if(!items.length)continue;
+    sections.push(`## ${labels[type]}`,"",...items.flatMap((record)=>[
+      `### ${record.id}`,"",record.content||"Unavailable","",`Status: ${record.status||"active"}`,`Evidence: ${record.verified?"user-confirmed or verified":"observed or inferred; review required"}`,`Confidence: ${record.confidence??"Unavailable"}`,`Source: ${record.source_session||record.source_path||"Unavailable"}`,"",
+    ]));
+  }
+  const lines=[`# ${clean(project.name||project.id)}`,"",`Generated: ${generatedAt}`,"","## Operational overview","",`Project ID: ${clean(project.id)}`,`Knowledge records: ${selected.length}`,`Verified records: ${selected.filter((record)=>record.verified).length}`,`Records requiring review: ${selected.filter((record)=>!record.verified).length}`,"",...sections];
   return {schemaVersion:1,generatedAt,project:{id:clean(project.id),name:clean(project.name||project.id)},records:selected,markdown:`${lines.join("\n")}\n`};
 }
 
-export function auditOperationalMemory({projects=[],records=[],packs=[],checkedAt=new Date().toISOString()}){
+export function auditOperationalMemory({projects=[],records=[],packs=[],questions=[],checkedAt=new Date().toISOString()}){
   const packed=new Set(packs.map((pack)=>pack.project?.id));
   const missingContextPacks=projects.map((project)=>project.id).filter((id)=>!packed.has(id)).sort();
   const needsReview=records.filter((record)=>!record.verified).map((record)=>record.id).sort();
-  return {checkedAt,status:missingContextPacks.length||needsReview.length?"needs-review":"healthy",missingContextPacks,needsReview};
+  const pendingClarifications=questions.filter((question)=>question.status==="pending").map((question)=>question.id).sort();
+  return {checkedAt,status:missingContextPacks.length||needsReview.length||pendingClarifications.length?"needs-review":"healthy",missingContextPacks,needsReview,pendingClarifications};
 }

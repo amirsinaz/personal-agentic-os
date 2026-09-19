@@ -28,6 +28,14 @@ Read the [security policy and local-first trust boundaries](SECURITY.md) before 
 - Equal-period cost comparison that keeps causal savings explicitly unavailable
 - Post-Apply optimization evidence that waits for enough valid runs
 - Read-only Sync integrity reports for missing, changed, and removed project ledger entries
+- A Memory Intelligence clarification queue for missing, changed, or conflicting project and Agent context
+- User-confirmed answers that immediately rebuild project Context Packs without promoting inferences to facts
+
+## Memory Intelligence and clarification loop
+
+Every Sync audits project Goals, Current State, Workflows, Rules, Routines, Agent responsibilities, tools, skills, and Subagent ownership. Historical gaps and later material changes appear under **Memory questions** in the local Dashboard. Answers are stored locally in `02-Global-Knowledge/records.json` as verified `user-confirmed` records with provenance; resolved questions remain in the audit trail and are not asked again unless different evidence creates a new change or conflict.
+
+The question ledger and last observed snapshot live in `00-System/clarifications.json`. Portable Context Packs group operational memory by type and show status, evidence level, confidence, and source. The system never invents an answer, copies a raw transcript into memory, or upgrades an observation or inference to a verified fact.
 
 ## Recommended installation
 
@@ -78,6 +86,25 @@ Search generated local Context Packs and receive source-bearing matches:
 
 ```bash
 npx personal-agentic-os@latest context /absolute/path/to/config.json "current authentication decision"
+```
+
+Import a ChatGPT `conversations.json` export (or its JavaScript wrapper), extract operational-memory candidates with the locally authenticated Codex CLI, and send every candidate to the Dashboard confirmation queue:
+
+```bash
+npx personal-agentic-os@latest memory-import /absolute/path/to/config.json /absolute/path/to/conversations.json
+```
+
+The extractor runs ephemerally in a temporary read-only workspace, uses constrained JSON output, validates project ids and record types, redacts credential-shaped content before storing candidates, and never marks model output as verified. This opt-in command sends the selected conversation batches and canonical project names through the user's authenticated Codex service for extraction; it never adds the export or extracted private content to this package or repository. Imported candidates become authoritative only after the user answers the corresponding **Memory question**.
+
+For recurring extraction, add the approved export path to the local configuration. The normal scheduled Sync then fingerprints conversations and sends only new or changed items to Codex:
+
+```json
+{
+  "memoryExtraction": {
+    "enabled": true,
+    "conversationSources": ["/absolute/path/to/conversations.json"]
+  }
+}
 ```
 
 During setup, the wizard shows the proposed tool connections and canonical project map before it writes memory. Projects are merged only by exact path, repository identity, or strong content-marker evidence. Name similarity alone is never enough. With approval, an operating-system template from `ops` can run the same incremental sync command periodically and keep the dashboard state current.

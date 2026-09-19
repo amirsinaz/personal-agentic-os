@@ -3,6 +3,7 @@ import path from "node:path";
 import { createHash } from "node:crypto";
 
 import { syncPersonalData } from "./onboarding.js";
+import { runConversationImport } from "./conversation-import-runner.js";
 
 function comparable(project) {
   return JSON.stringify({ id: project.id, name: project.name, status: project.status });
@@ -18,10 +19,15 @@ export function auditSyncIntegrity({projects=[],ledger={}}){
   return {status:missing.length||changed.length||removed.length?"needs-review":"healthy",missing,changed,removed,current};
 }
 
-export async function runIncrementalSync(configPath, { now = new Date().toISOString() } = {}) {
+export async function runIncrementalSync(configPath, { now = new Date().toISOString(), extract } = {}) {
   const statePath = path.join(path.dirname(configPath), "state.json");
   const updateStatus=JSON.parse(await readFile(path.join(path.dirname(configPath),"update-status.json"),"utf8").catch((error)=>error?.code==="ENOENT"?"{}":Promise.reject(error)));
   if(updateStatus.requiredUpdate===true)throw new Error(`Required update: ${updateStatus.latestVersion??"new release"} ${updateStatus.releaseUrl??""}`.trim());
+  const config=JSON.parse(await readFile(configPath,"utf8"));
+  if(config.memoryExtraction?.enabled){
+    const semanticExtract=extract??(await import("./codex-memory-extractor.js")).extractWithCodex;
+    for(const sourcePath of config.memoryExtraction.conversationSources??[])await runConversationImport({configPath,sourcePath,extract:semanticExtract,importedAt:now});
+  }
   const previous = JSON.parse(await readFile(statePath, "utf8").catch((error) => {
     if (error?.code === "ENOENT") return "{\"projects\":[]}";
     throw error;
