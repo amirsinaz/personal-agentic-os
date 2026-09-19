@@ -2,6 +2,7 @@ import { createHash } from "node:crypto";
 import path from "node:path";
 
 const PRIVATE_SEGMENTS = ["01-Projects", "02-Global-Knowledge", "03-Sessions", "08-Reports", "09-Exports", ".obsidian", ".env"];
+const MAINTAINER_ONLY_PREFIXES = [".playwright-cli/", "design/", "output/", "tasks/"];
 const CAPABILITIES = [
   { name: "Personal Agent Registry", matches: ["/agents/", "agent-registry"] },
   { name: "Cost intelligence", matches: ["/costs/", "cost-ledger", "token-economy"] },
@@ -25,8 +26,9 @@ export function parsePorcelain(output) {
 }
 
 export function buildReviewSummary(files) {
-  const safe = files.filter(({ file }) => !PRIVATE_SEGMENTS.some((segment) => file.split("/").includes(segment) || file.includes(segment)));
-  const excluded = files.length - safe.length;
+  const reviewable = files.filter(({ file }) => !MAINTAINER_ONLY_PREFIXES.some((prefix) => file === prefix.slice(0, -1) || file.startsWith(prefix)));
+  const safe = reviewable.filter(({ file }) => !PRIVATE_SEGMENTS.some((segment) => file.split("/").includes(segment) || file.includes(segment)));
+  const excluded = reviewable.length - safe.length;
   const capabilities = CAPABILITIES.filter(({ matches }) => safe.some(({ file }) => matches.some((match) => `/${file}`.includes(match)))).map(({ name }) => name);
   return { files: safe, excluded, capabilities: capabilities.length ? capabilities : ["Platform changes"] };
 }

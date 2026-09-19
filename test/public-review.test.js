@@ -13,6 +13,16 @@ test("classifies public capabilities and excludes private data paths",()=>{
   assert.equal(result.files.length,2);
 });
 
+test("ignores maintainer plans, design artifacts, and browser output",()=>{
+  const result=buildReviewSummary([
+    {status:"??",file:"tasks/plan-personal-agent-registry.md"},
+    {status:"??",file:"design/audit.md"},
+    {status:"??",file:"output/playwright/agents-mobile.png"},
+    {status:"??",file:".playwright-cli/session.json"},
+  ]);
+  assert.deepEqual(result,{files:[],excluded:0,capabilities:["Platform changes"]});
+});
+
 test("changes the review id when content changes inside the same file paths",()=>{
   const first=buildReviewId([{label:"dashboard",files:[{status:" M",file:"src/app/page.tsx",digest:"before"}]}]);
   const second=buildReviewId([{label:"dashboard",files:[{status:" M",file:"src/app/page.tsx",digest:"after"}]}]);
