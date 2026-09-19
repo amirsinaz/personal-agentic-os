@@ -2,7 +2,7 @@ import { createHash } from "node:crypto";
 import path from "node:path";
 
 const PRIVATE_SEGMENTS = ["01-Projects", "02-Global-Knowledge", "03-Sessions", "08-Reports", "09-Exports", ".obsidian", ".env"];
-const MAINTAINER_ONLY_PREFIXES = [".playwright-cli/", "design/", "output/", "tasks/"];
+const MAINTAINER_ONLY_PREFIXES = [".playwright-cli/", "design/", "output/", "tasks/", "SPEC-"];
 const CAPABILITIES = [
   { name: "Personal Agent Registry", matches: ["/agents/", "agent-registry"] },
   { name: "Cost intelligence", matches: ["/costs/", "cost-ledger", "token-economy"] },

@@ -19,6 +19,7 @@ test("ignores maintainer plans, design artifacts, and browser output",()=>{
     {status:"??",file:"design/audit.md"},
     {status:"??",file:"output/playwright/agents-mobile.png"},
     {status:"??",file:".playwright-cli/session.json"},
+    {status:"??",file:"SPEC-memory-intelligence.md"},
   ]);
   assert.deepEqual(result,{files:[],excluded:0,capabilities:["Platform changes"]});
 });
